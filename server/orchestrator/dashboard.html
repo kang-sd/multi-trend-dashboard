@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 모델 오케스트레이터</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
+  --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+  --green: #3fb950; --red: #f85149; --yellow: #d29922; --blue: #58a6ff; --purple: #a371f7;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; margin: 0; }
+.navbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 10px 20px; display: flex; align-items: center; gap: 12px; }
+.navbar h1 { font-size: 16px; font-weight: 600; margin: 0; color: var(--text); }
+.badge-live   { background: #1a3a1a; color: var(--green); border: 1px solid var(--green); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+.badge-dead   { background: #3a1a1a; color: var(--red);   border: 1px solid var(--red);   border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+.badge-warn   { background: #3a2a10; color: var(--yellow); border: 1px solid var(--yellow); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+.badge-mode   { background: var(--bg3); color: var(--blue); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 11px; }
+.badge-ok     { background: #1a3a1a; color: var(--green); border-radius: 4px; padding: 2px 6px; font-size: 11px; }
+.badge-key    { background: #1a2a3a; color: var(--blue);  border-radius: 4px; padding: 2px 6px; font-size: 11px; }
+.badge-nokey  { background: #3a2a10; color: var(--yellow); border-radius: 4px; padding: 2px 6px; font-size: 11px; }
+
+.section { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.section-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
+
+/* Provider cards */
+.provider-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.provider-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px;
+  transition: border-color .2s;
+}
+.provider-card:hover { border-color: var(--blue); }
+.provider-card.has-primary { border-left: 3px solid var(--green); }
+.provider-card .prov-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.provider-card .prov-name { font-weight: 600; font-size: 14px; }
+.provider-card .prov-desc { color: var(--muted); font-size: 11px; margin-bottom: 8px; }
+.provider-card .prov-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.stat-chip { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; font-size: 11px; color: var(--muted); }
+.stat-chip span { color: var(--text); font-weight: 600; }
+.prov-projects { font-size: 11px; color: var(--muted); }
+.prov-projects .proj-tag {
+  display: inline-block; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 3px; padding: 1px 5px; margin: 2px; color: var(--blue); font-size: 10px;
+}
+.model-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+.model-dot.live { background: var(--green); }
+.model-dot.dead { background: var(--red); }
+.model-dot.warn { background: var(--yellow); }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: var(--bg3); color: var(--muted); font-weight: 500; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:hover td { background: rgba(255,255,255,.02); }
+.model-id { font-family: monospace; font-size: 12px; color: var(--blue); }
+.model-api { font-family: monospace; font-size: 11px; color: var(--muted); }
+
+/* Action bar */
+.action-bar { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 20px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+.btn-act { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg3); color: var(--text); cursor: pointer; font-size: 13px; transition: all .15s; }
+.btn-act:hover { background: var(--border); }
+.btn-act.primary { background: #1a3a1a; border-color: var(--green); color: var(--green); }
+.btn-act.danger  { background: #3a1a1a; border-color: var(--red);   color: var(--red); }
+.btn-act.info    { background: #1a2a3a; border-color: var(--blue);  color: var(--blue); }
+.btn-act:disabled { opacity: .4; cursor: not-allowed; }
+.last-update { color: var(--muted); font-size: 12px; margin-left: auto; align-self: center; }
+
+/* Console */
+.console-box {
+  background: #0a0c10; border: 1px solid var(--border); border-radius: 6px;
+  font-family: monospace; font-size: 12px; color: #c9d1d9;
+  padding: 12px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;
+  min-height: 60px;
+}
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.tab { padding: 8px 16px; cursor: pointer; color: var(--muted); font-size: 13px; border-bottom: 2px solid transparent; }
+.tab.active { color: var(--text); border-bottom-color: var(--blue); }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* Changelog */
+.log-entry { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; font-size: 12px; }
+.log-ts { color: var(--muted); font-size: 11px; }
+.log-proj { font-weight: 600; color: var(--blue); }
+.log-action { color: var(--yellow); }
+
+/* Spinner */
+.spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+  <div>🤖</div>
+  <h1>AI 모델 오케스트레이터</h1>
+  <span id="quick-stats" style="font-size:12px; color:var(--muted);">로딩 중...</span>
+  <span class="last-update" id="last-update"></span>
+</div>
+
+<!-- Action Bar -->
+<div class="action-bar">
+  <button class="btn-act info" id="btn-refresh-models">🔄 모델 목록 새로고침</button>
+  <button class="btn-act" id="btn-dry-run">🔍 자동교체 dry-run</button>
+  <button class="btn-act primary" id="btn-apply">⚡ 자동교체 실행</button>
+  <button class="btn-act" id="btn-reload-data">📊 데이터 새로고침</button>
+</div>
+
+<!-- Main Tabs -->
+<div class="section" style="padding-bottom:0; border-bottom:none;">
+  <div class="tabs">
+    <div class="tab active" data-tab="providers">제공사 현황</div>
+    <div class="tab" data-tab="models">모델 레지스트리</div>
+    <div class="tab" data-tab="projects">프로젝트 바인딩</div>
+    <div class="tab" data-tab="changelog">변경 이력</div>
+    <div class="tab" data-tab="console">콘솔</div>
+  </div>
+</div>
+
+<!-- Tab: 제공사 현황 -->
+<div class="section tab-pane active" id="tab-providers">
+  <div class="section-title">제공사별 모델 현황</div>
+  <div class="provider-grid" id="provider-grid">
+    <div style="color:var(--muted);">로딩 중...</div>
+  </div>
+</div>
+
+<!-- Tab: 모델 레지스트리 -->
+<div class="section tab-pane" id="tab-models">
+  <div class="section-title">등록된 모델 레지스트리</div>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>제공사</th><th>API 모델명</th><th>상태</th><th>우선순위</th><th>용도</th></tr>
+    </thead>
+    <tbody id="model-table-body"></tbody>
+  </table>
+</div>
+
+<!-- Tab: 프로젝트 바인딩 -->
+<div class="section tab-pane" id="tab-projects">
+  <div class="section-title">프로젝트별 모델 바인딩</div>
+  <table>
+    <thead>
+      <tr><th>프로젝트</th><th>타입</th><th>패치 모드</th><th>Primary 모델</th><th>Fallback 1</th><th>Fallback 2</th><th>상태</th><th>액션</th></tr>
+    </thead>
+    <tbody id="project-table-body"></tbody>
+  </table>
+</div>
+
+<!-- Tab: 변경 이력 -->
+<div class="section tab-pane" id="tab-changelog">
+  <div class="section-title">자동 교체 변경 이력</div>
+  <div id="changelog-list"><div style="color:var(--muted);">이력 없음</div></div>
+</div>
+
+<!-- Tab: 콘솔 -->
+<div class="section tab-pane" id="tab-console">
+  <div class="section-title">실행 출력</div>
+  <div class="console-box" id="console-output">대기 중...</div>
+</div>
+
+<script>
+const API = "http://localhost:7070";
+let statusData = null, bindingsData = null, providersData = null;
+
+// ── 탭 전환 ──
+document.querySelectorAll(".tab").forEach(t => {
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".tab-pane").forEach(x => x.classList.remove("active"));
+    t.classList.add("active");
+    document.getElementById("tab-" + t.dataset.tab).classList.add("active");
+    if (t.dataset.tab === "changelog") loadChangelog();
+  });
+});
+
+// ── 데이터 로드 ──
+async function loadAll() {
+  try {
+    [statusData, bindingsData, providersData] = await Promise.all([
+      fetch(`${API}/api/status`).then(r => r.json()),
+      fetch(`${API}/api/bindings`).then(r => r.json()),
+      fetch(`${API}/api/providers`).then(r => r.json()),
+    ]);
+    renderProviders();
+    renderModels();
+    renderProjects();
+    updateQuickStats();
+    document.getElementById("last-update").textContent = "업데이트: " + new Date().toLocaleTimeString("ko-KR");
+  } catch (e) {
+    console.error(e);
+    document.getElementById("quick-stats").textContent = "서버 연결 실패";
+  }
+}
+
+function updateQuickStats() {
+  if (!statusData) return;
+  const models = statusData.models || [];
+  const live = models.filter(m => m.status?.startsWith("✅")).length;
+  const dead = models.filter(m => m.status?.startsWith("❌")).length;
+  const bindings = (bindingsData?.bindings || []).filter(b => b.enabled);
+  document.getElementById("quick-stats").innerHTML =
+    `<span style="color:var(--green)">✅ live ${live}</span>&nbsp;&nbsp;` +
+    `<span style="color:var(--red)">❌ dead ${dead}</span>&nbsp;&nbsp;` +
+    `<span style="color:var(--muted)">프로젝트 ${bindings.length}개</span>`;
+}
+
+// ── 제공사 카드 렌더링 ──
+function renderProviders() {
+  const grid = document.getElementById("provider-grid");
+  if (!providersData) return;
+  const cards = Object.values(providersData).map(prov => {
+    const liveModels = prov.registeredModels.filter(m => m.status?.startsWith("✅"));
+    const deadModels = prov.registeredModels.filter(m => m.status?.startsWith("❌"));
+    const hasPrimary = prov.primaryProjects.length > 0;
+
+    const modelDots = prov.registeredModels.map(m => {
+      const cls = m.status?.startsWith("✅") ? "live" : m.status?.startsWith("❌") ? "dead" : "warn";
+      return `<span class="model-dot ${cls}" title="${m.id}: ${m.status}"></span><span style="font-size:11px;color:var(--muted)">${m.id}</span> `;
+    }).join("<br>");
+
+    const primaryTags = prov.primaryProjects.map(p =>
+      `<span class="proj-tag" title="Primary 사용 프로젝트">🔴 ${p}</span>`).join("");
+    const fallbackTags = prov.fallbackProjects.map(p =>
+      `<span class="proj-tag" title="Fallback 사용 프로젝트" style="color:var(--muted)">🟡 ${p}</span>`).join("");
+
+    return `
+    <div class="provider-card ${hasPrimary ? 'has-primary' : ''}">
+      <div class="prov-header">
+        <span style="font-size:20px">${prov.emoji}</span>
+        <div>
+          <div class="prov-name">${prov.name}</div>
+          <div class="prov-desc">${prov.desc}</div>
+        </div>
+      </div>
+      <div class="prov-stats">
+        <span class="${prov.hasKey ? 'badge-key' : 'badge-nokey'}">${prov.hasKey ? '🔑 키 있음' : '⚠️ 키 없음'}</span>
+        ${liveModels.length ? `<span class="stat-chip"><span>${liveModels.length}</span> live</span>` : ""}
+        ${deadModels.length ? `<span class="stat-chip" style="color:var(--red)"><span>${deadModels.length}</span> dead</span>` : ""}
+        ${prov.freeCount ? `<span class="stat-chip"><span>${prov.freeCount}</span> 무료모델</span>` : ""}
+      </div>
+      ${prov.registeredModels.length ? `<div style="margin-bottom:8px;font-size:11px;">${modelDots}</div>` : ""}
+      ${(primaryTags || fallbackTags) ? `<div class="prov-projects">${primaryTags}${fallbackTags}</div>` : `<div class="prov-projects" style="color:var(--muted)">사용 프로젝트 없음</div>`}
+    </div>`;
+  });
+  grid.innerHTML = cards.join("");
+}
+
+// ── 모델 테이블 렌더링 ──
+function renderModels() {
+  const tbody = document.getElementById("model-table-body");
+  if (!statusData?.models) return;
+  tbody.innerHTML = statusData.models.map(m => {
+    const statusBadge = m.status?.startsWith("✅") ? `<span class="badge-live">${m.status}</span>` :
+                        m.status?.startsWith("❌") ? `<span class="badge-dead">${m.status}</span>` :
+                                                      `<span class="badge-warn">${m.status}</span>`;
+    return `<tr>
+      <td class="model-id">${m.id}</td>
+      <td>${m.provider}</td>
+      <td class="model-api">${m.model}</td>
+      <td>${statusBadge}</td>
+      <td style="color:var(--muted)">${m.priority ?? "-"}</td>
+      <td style="color:var(--muted);font-size:11px">${(m.use_for || []).join(", ")}</td>
+    </tr>`;
+  }).join("");
+}
+
+// ── 프로젝트 테이블 렌더링 ──
+const MODEL_STATUS_CACHE = {};
+function getModelStatusClass(id) {
+  if (!statusData?.models) return "muted";
+  const m = statusData.models.find(x => x.id === id);
+  if (!m) return "warn";
+  if (m.status?.startsWith("✅")) return "green";
+  if (m.status?.startsWith("❌")) return "red";
+  return "yellow";
+}
+
+function modelCell(id) {
+  const cls = getModelStatusClass(id);
+  const dot = cls === "green" ? "live" : cls === "red" ? "dead" : "warn";
+  return `<span class="model-dot ${dot}"></span><span class="model-id">${id}</span>`;
+}
+
+function renderProjects() {
+  const tbody = document.getElementById("project-table-body");
+  if (!bindingsData?.bindings) return;
+  tbody.innerHTML = bindingsData.bindings.map(b => {
+    if (!b.enabled) return `<tr style="opacity:.4"><td>${b.project_id}</td><td colspan="7" style="color:var(--muted)">비활성(disabled)</td></tr>`;
+    const patchBadge = {
+      firestore: `<span class="badge-mode">🔥 Firestore</span>`,
+      file_edit:  `<span class="badge-mode">📝 파일편집</span>`,
+      n8n_api:    `<span class="badge-mode">🔀 n8n API</span>`,
+      manual_log: `<span class="badge-mode" style="color:var(--yellow)">📋 로그만</span>`,
+      disabled:   `<span class="badge-mode" style="opacity:.5">-</span>`,
+    }[b.patch_mode] || `<span class="badge-mode">${b.patch_mode}</span>`;
+
+    const typeIcons = { firebase: "🔥", node: "📦", "n8n": "🔀", "google-apps-script": "📋", "cloudflare-pages": "☁️" };
+    const fb0 = b.fallback_model_ids?.[0] || "-";
+    const fb1 = b.fallback_model_ids?.[1] || "-";
+    const allLive = getModelStatusClass(b.primary_model_id) === "green"
+      && (fb0 === "-" || getModelStatusClass(fb0) !== "red")
+      && (fb1 === "-" || getModelStatusClass(fb1) !== "red");
+    const statusBadge = allLive ? `<span class="badge-live">정상</span>` : `<span class="badge-dead">점검필요</span>`;
+    return `<tr>
+      <td style="font-weight:500">${b.project_id}</td>
+      <td>${typeIcons[b.target_type] || ""} ${b.target_type}</td>
+      <td>${patchBadge}</td>
+      <td>${modelCell(b.primary_model_id)}</td>
+      <td>${fb0 !== "-" ? modelCell(fb0) : "<span style='color:var(--muted)'>-</span>"}</td>
+      <td>${fb1 !== "-" ? modelCell(fb1) : "<span style='color:var(--muted)'>-</span>"}</td>
+      <td>${statusBadge}</td>
+      <td><button class="btn-act" style="padding:3px 8px;font-size:11px" onclick="runProject('${b.project_id}')">교체 실행</button></td>
+    </tr>`;
+  }).join("");
+}
+
+// ── 변경 이력 ──
+async function loadChangelog() {
+  const data = await fetch(`${API}/api/changelog`).then(r => r.json()).catch(() => ({ changes: [] }));
+  const list = document.getElementById("changelog-list");
+  if (!data.changes?.length) { list.innerHTML = `<div style="color:var(--muted)">이력 없음</div>`; return; }
+  list.innerHTML = [...data.changes].reverse().map(c => `
+    <div class="log-entry">
+      <div class="log-ts">${c.ts}</div>
+      <div><span class="log-proj">${c.project}</span> → <span class="log-action">${c.action}</span></div>
+      ${c.old_model ? `<div style="color:var(--muted);font-size:11px">❌ ${c.old_model} → ✅ ${c.new_model}</div>` : ""}
+      ${c.suggested_replacement ? `<div style="color:var(--muted);font-size:11px">제안: ${c.suggested_replacement}</div>` : ""}
+    </div>`).join("");
+}
+
+// ── 버튼 이벤트 ──
+function setLoading(btn, isLoading) {
+  btn.disabled = isLoading;
+  if (isLoading) btn.innerHTML = `<span class="spinner"></span> ` + btn.dataset.label;
+  else btn.innerHTML = btn.dataset.label;
+}
+
+function showConsole(output) {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  document.querySelectorAll(".tab-pane").forEach(x => x.classList.remove("active"));
+  document.querySelector('[data-tab="console"]').classList.add("active");
+  document.getElementById("tab-console").classList.add("active");
+  document.getElementById("console-output").textContent = output;
+}
+
+async function runAPI(endpoint, btnEl) {
+  if (btnEl) setLoading(btnEl, true);
+  try {
+    const res = await fetch(`${API}${endpoint}`, { method: "POST" });
+    const data = await res.json();
+    showConsole(data.output || "(출력 없음)");
+    await loadAll();
+  } catch (e) {
+    showConsole("오류: " + e.message);
+  }
+  if (btnEl) setLoading(btnEl, false);
+}
+
+function runProject(projectId) {
+  fetch(`${API}/api/replace-project/${encodeURIComponent(projectId)}`, { method: "POST" })
+    .then(r => r.json())
+    .then(d => { showConsole(d.output); loadAll(); })
+    .catch(e => showConsole("오류: " + e.message));
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnRefresh = document.getElementById("btn-refresh-models");
+  const btnDry     = document.getElementById("btn-dry-run");
+  const btnApply   = document.getElementById("btn-apply");
+  const btnReload  = document.getElementById("btn-reload-data");
+
+  btnRefresh.dataset.label = btnRefresh.textContent;
+  btnDry.dataset.label     = btnDry.textContent;
+  btnApply.dataset.label   = btnApply.textContent;
+
+  btnRefresh.addEventListener("click", () => runAPI("/api/fetch-models", btnRefresh));
+  btnDry.addEventListener("click",     () => runAPI("/api/replace-dry",  btnDry));
+  btnApply.addEventListener("click",   () => {
+    if (!confirm("실제로 모델을 교체합니다. 계속하시겠습니까?")) return;
+    runAPI("/api/replace-apply", btnApply);
+  });
+  btnReload.addEventListener("click", loadAll);
+
+  loadAll();
+});
+</script>
+</body>
+</html>

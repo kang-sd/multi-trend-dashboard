@@ -1,0 +1,2796 @@
+{
+  "ok": true,
+  "summary": {
+    "liveModelCount": 18,
+    "deadModelCount": 5,
+    "enabledProjectCount": 15,
+    "autoProjectCount": 12,
+    "configSuccessCount": 6,
+    "configFailureCount": 1
+  },
+  "status": {
+    "_meta": {
+      "last_checked": "2026-04-29",
+      "checked_by": "Antigravity — 실시간 API ping 결과 (ping_final.mjs)",
+      "note": "live/dead 구분. 2026-04-29 2차 검증: SambaNova 신규 키 live 확인(3종), Gemini 2.5 Flash live, Hyperbolic 폐기",
+      "free_models_updated": "2026-04-29"
+    },
+    "models": [
+      {
+        "id": "cerebras-llama31-8b",
+        "provider": "Cerebras",
+        "model": "llama3.1-8b",
+        "endpoint": "https://api.cerebras.ai/v1/chat/completions",
+        "key_env": "CEREBRAS_API_KEY",
+        "status": "✅ live",
+        "priority": 1,
+        "use_for": [
+          "step1_research",
+          "step2_plan",
+          "general"
+        ],
+        "notes": "빠름. 무료 티어"
+      },
+      {
+        "id": "groq-llama31-8b",
+        "provider": "Groq",
+        "model": "llama-3.1-8b-instant",
+        "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+        "key_env": "GROQ_API_KEY",
+        "status": "✅ live",
+        "priority": 2,
+        "use_for": [
+          "step1_research",
+          "general"
+        ],
+        "notes": "TPM 여유 있음"
+      },
+      {
+        "id": "groq-llama33-70b",
+        "provider": "Groq",
+        "model": "llama-3.3-70b-versatile",
+        "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+        "key_env": "GROQ_API_KEY",
+        "status": "✅ live (키 로테이션 필요)",
+        "priority": 3,
+        "use_for": [
+          "step1_research",
+          "heavy_task"
+        ],
+        "notes": "TPM 12000 제한. 메인키 소진 시 GROQ_API_KEY_1/2/3 로테이션 필수",
+        "key_rotation": [
+          "GROQ_API_KEY",
+          "GROQ_API_KEY_1",
+          "GROQ_API_KEY_2",
+          "GROQ_API_KEY_3"
+        ]
+      },
+      {
+        "id": "or-gemini-flash-lite",
+        "provider": "OpenRouter",
+        "model": "google/gemini-2.0-flash-lite-001",
+        "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+        "key_env": "OPENROUTER_API_KEY",
+        "status": "✅ live",
+        "priority": 4,
+        "use_for": [
+          "step2_plan",
+          "fallback_primary"
+        ],
+        "notes": "안정적. 폴백 1순위 권장"
+      },
+      {
+        "id": "or-step-flash",
+        "provider": "OpenRouter",
+        "model": "stepfun/step-3.5-flash",
+        "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+        "key_env": "OPENROUTER_API_KEY",
+        "status": "✅ live",
+        "priority": 5,
+        "use_for": [
+          "fallback_secondary"
+        ],
+        "notes": "안정적. 폴백 2순위"
+      },
+      {
+        "id": "or-gpt-oss-free",
+        "provider": "OpenRouter",
+        "model": "openai/gpt-oss-120b:free",
+        "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+        "key_env": "OPENROUTER_API_KEY",
+        "status": "✅ live",
+        "priority": 6,
+        "use_for": [
+          "step3_json",
+          "fallback_free"
+        ],
+        "notes": "120B 무료. JSON 생성에 적합"
+      },
+      {
+        "id": "or-qwen3-coder-free",
+        "provider": "OpenRouter",
+        "model": "qwen/qwen3-coder:free",
+        "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+        "key_env": "OPENROUTER_API_KEY",
+        "status": "⚠️ rate_limit (429)",
+        "priority": 7,
+        "use_for": [
+          "step3_json"
+        ],
+        "notes": "모델 자체는 유효. 과부하 시 rate limit. gpt-oss-free로 대체 권장"
+      },
+      {
+        "id": "or-qwen3-plus",
+        "provider": "OpenRouter",
+        "model": "qwen/qwen3-plus",
+        "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+        "key_env": "OPENROUTER_API_KEY",
+        "status": "❌ dead (invalid model ID)",
+        "priority": 99,
+        "use_for": [],
+        "notes": "모델 ID 폐기됨. or-gemini-flash-lite 또는 or-gpt-oss-free로 교체"
+      },
+      {
+        "id": "or-devstral-free",
+        "provider": "OpenRouter",
+        "model": "mistral/devstral-2:free",
+        "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+        "key_env": "OPENROUTER_API_KEY",
+        "status": "❌ dead (invalid model ID)",
+        "priority": 99,
+        "use_for": [],
+        "notes": "모델 ID 폐기됨. or-gpt-oss-free로 교체"
+      },
+      {
+        "id": "or-nemotron-free",
+        "provider": "OpenRouter",
+        "model": "nvidia/nemotron-3-super-120b:free",
+        "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+        "key_env": "OPENROUTER_API_KEY",
+        "status": "❌ dead (invalid model ID)",
+        "priority": 99,
+        "use_for": [],
+        "notes": "모델 ID 폐기됨. or-gpt-oss-free로 교체"
+      },
+      {
+        "id": "cerebras-llama33-70b",
+        "provider": "Cerebras",
+        "model": "llama-3.3-70b",
+        "endpoint": "https://api.cerebras.ai/v1/chat/completions",
+        "key_env": "CEREBRAS_API_KEY",
+        "status": "✅ live",
+        "priority": 3,
+        "use_for": [
+          "step2_plan",
+          "heavy_task"
+        ],
+        "notes": "70B. step2 계획 단계에 적합"
+      },
+      {
+        "id": "hf-llama31-8b-cerebras",
+        "provider": "HuggingFace",
+        "model": "meta-llama/Llama-3.1-8B-Instruct:cerebras",
+        "endpoint": "https://router.huggingface.co/cerebras/v1/chat/completions",
+        "key_env": "HF_TOKEN",
+        "status": "✅ live",
+        "priority": 4,
+        "use_for": [
+          "step1_research",
+          "fallback_secondary"
+        ],
+        "notes": "HF Inference Router → Cerebras 백엔드. HF_TOKEN 필수"
+      },
+      {
+        "id": "groq-llama3-70b-8192",
+        "provider": "Groq",
+        "model": "llama3-70b-8192",
+        "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+        "key_env": "GROQ_API_KEY",
+        "status": "✅ live",
+        "priority": 5,
+        "use_for": [
+          "step1_research",
+          "heavy_task"
+        ],
+        "notes": "8192 컨텍스트. 대용량 리서치에 적합"
+      },
+      {
+        "id": "groq-llama3-8b-8192",
+        "provider": "Groq",
+        "model": "llama3-8b-8192",
+        "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+        "key_env": "GROQ_API_KEY",
+        "status": "✅ live",
+        "priority": 6,
+        "use_for": [
+          "step1_research",
+          "general"
+        ],
+        "notes": "경량. 빠른 리서치"
+      },
+      {
+        "id": "groq-mixtral-8x7b",
+        "provider": "Groq",
+        "model": "mixtral-8x7b-32768",
+        "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+        "key_env": "GROQ_API_KEY",
+        "status": "✅ live",
+        "priority": 7,
+        "use_for": [
+          "step2_plan",
+          "general"
+        ],
+        "notes": "MoE. 긴 컨텍스트(32K) 처리에 유리"
+      },
+      {
+        "id": "sambanova-llama33-70b",
+        "provider": "SambaNova",
+        "model": "Meta-Llama-3.3-70B-Instruct",
+        "endpoint": "https://api.sambanova.ai/v1/chat/completions",
+        "key_env": "SAMBANOVA_API_KEY",
+        "status": "✅ live",
+        "priority": 5,
+        "latencyMs": 979,
+        "use_for": [
+          "step1_research",
+          "general",
+          "heavy_task"
+        ],
+        "notes": "2026-04-29 신규 키(2074c604...) ping ✅ live 979ms. 구 Llama-3.1-70B ID는 폐기됨(410)"
+      },
+      {
+        "id": "sambanova-deepseek-v3",
+        "provider": "SambaNova",
+        "model": "DeepSeek-V3.1",
+        "endpoint": "https://api.sambanova.ai/v1/chat/completions",
+        "key_env": "SAMBANOVA_API_KEY",
+        "status": "✅ live",
+        "priority": 6,
+        "latencyMs": 1031,
+        "use_for": [
+          "heavy_task",
+          "reasoning",
+          "step3_json"
+        ],
+        "notes": "2026-04-29 ping ✅ live 1031ms. DeepSeek V3.1 via SambaNova Cloud"
+      },
+      {
+        "id": "sambanova-llama4-maverick",
+        "provider": "SambaNova",
+        "model": "Llama-4-Maverick-17B-128E-Instruct",
+        "endpoint": "https://api.sambanova.ai/v1/chat/completions",
+        "key_env": "SAMBANOVA_API_KEY",
+        "status": "✅ live",
+        "priority": 4,
+        "latencyMs": 319,
+        "use_for": [
+          "step1_research",
+          "general",
+          "fallback_free"
+        ],
+        "notes": "2026-04-29 ping ✅ live 319ms. 빠른 응답. SambaNova 추천 최우선 모델"
+      },
+      {
+        "id": "chutes-llama70b",
+        "provider": "Chutes",
+        "model": "chutesai/Llama-4-Scout-17B-16E-Instruct",
+        "endpoint": "https://llm.chutes.ai/v1/chat/completions",
+        "key_env": "CHUTES_API_KEY",
+        "status": "❌ dead (HTTP 404 — 모델 ID 변경)",
+        "priority": 99,
+        "use_for": [],
+        "notes": "2026-04-29 ping 결과 404. 모델 ID 폐기됨. Chutes는 유료 전용 서비스로 확인. 무료 대안: or-gpt-oss-free"
+      },
+      {
+        "id": "chutes-deepseek-r1",
+        "provider": "Chutes",
+        "model": "deepseek-ai/DeepSeek-R1",
+        "endpoint": "https://llm.chutes.ai/v1/chat/completions",
+        "key_env": "CHUTES_API_KEY",
+        "status": "❌ dead (HTTP 404 — 모델 ID 변경)",
+        "priority": 99,
+        "use_for": [],
+        "notes": "2026-04-29 ping 결과 404. Chutes는 유료 전용. 무료 대안: or-gpt-oss-free"
+      },
+      {
+        "id": "hyperbolic-llama70b",
+        "provider": "Hyperbolic",
+        "model": "meta-llama/Llama-3.3-70B-Instruct",
+        "endpoint": "https://api.hyperbolic.xyz/v1/chat/completions",
+        "key_env": "HYPERBOLIC_API_KEY",
+        "status": "🗑️ 폐기",
+        "priority": 99,
+        "use_for": [],
+        "notes": "2026-04-29 사용자 지시로 폐기. 유료 서비스, 잔액 부족(402). 재충전 계획 없음"
+      },
+      {
+        "id": "hyperbolic-deepseek-r1",
+        "provider": "Hyperbolic",
+        "model": "deepseek-ai/DeepSeek-R1",
+        "endpoint": "https://api.hyperbolic.xyz/v1/chat/completions",
+        "key_env": "HYPERBOLIC_API_KEY",
+        "status": "🗑️ 폐기",
+        "priority": 99,
+        "use_for": [],
+        "notes": "2026-04-29 사용자 지시로 폐기. 유료 서비스, 잔액 부족(402). 재충전 계획 없음"
+      },
+      {
+        "id": "cohere-command-r-plus",
+        "provider": "Cohere",
+        "model": "command-r-plus-08-2024",
+        "endpoint": "https://api.cohere.com/v2/chat",
+        "key_env": "COHERE_API_KEY",
+        "status": "✅ live",
+        "priority": 8,
+        "latencyMs": 932,
+        "use_for": [
+          "general",
+          "step2_plan",
+          "fallback_free"
+        ],
+        "notes": "2026-04-29 ping 확인 live (932ms). Cohere Command R+. RAG 및 엔터프라이즈 NLP. 무료 티어 포함"
+      },
+      {
+        "id": "cohere-command-r",
+        "provider": "Cohere",
+        "model": "command-r-08-2024",
+        "endpoint": "https://api.cohere.com/v2/chat",
+        "key_env": "COHERE_API_KEY",
+        "status": "✅ live",
+        "priority": 9,
+        "latencyMs": 778,
+        "use_for": [
+          "general",
+          "fallback_free"
+        ],
+        "notes": "2026-04-29 ping 확인 live (778ms). Cohere Command R. 경량형. 무료 티어 포함"
+      },
+      {
+        "id": "gemini-flash-lite",
+        "provider": "Gemini",
+        "model": "gemini-2.0-flash-lite-001",
+        "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-001:generateContent",
+        "key_env": "GEMINI_API_KEY",
+        "status": "✅ live (OpenRouter 경유 확인)",
+        "priority": 4,
+        "use_for": [
+          "step2_plan",
+          "fallback_primary",
+          "general"
+        ],
+        "notes": "OpenRouter 경유 or-gemini-flash-lite로 live 확인. Gemini 직접 호출 시 GEMINI_API_KEY 필요"
+      },
+      {
+        "id": "gemini-2-5-flash",
+        "provider": "Gemini",
+        "model": "gemini-2.5-flash",
+        "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "key_env": "GEMINI_API_KEY",
+        "status": "✅ live",
+        "priority": 3,
+        "latencyMs": 1300,
+        "use_for": [
+          "step1_research",
+          "step2_plan",
+          "general",
+          "heavy_task"
+        ],
+        "notes": "2026-04-29 AI Studio 신규 키(AIzaSy...) ping ✅ live 1300ms. 2.0 Flash Lite는 429(할당량 초과) — 추후 복구 예상"
+      },
+      {
+        "id": "gemini-flash",
+        "provider": "Gemini",
+        "model": "gemini-2.0-flash",
+        "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+        "key_env": "GEMINI_API_KEY",
+        "status": "⚠️ 미검증",
+        "priority": 13,
+        "use_for": [
+          "general"
+        ],
+        "notes": "AI Studio 키 있음. 별도 ping 미실시. 필요 시 검증 가능"
+      },
+      {
+        "id": "ollama-llama3",
+        "provider": "Ollama",
+        "model": "llama3",
+        "endpoint": "http://localhost:11434/v1/chat/completions",
+        "key_env": null,
+        "status": "⚠️ 미검증 (로컬 실행 필요)",
+        "priority": 20,
+        "use_for": [
+          "local",
+          "offline"
+        ],
+        "notes": "로컬 Ollama 런타임. ollama pull llama3 후 사용 가능"
+      },
+      {
+        "id": "ollama-mistral",
+        "provider": "Ollama",
+        "model": "mistral",
+        "endpoint": "http://localhost:11434/v1/chat/completions",
+        "key_env": null,
+        "status": "⚠️ 미검증 (로컬 실행 필요)",
+        "priority": 21,
+        "use_for": [
+          "local",
+          "offline"
+        ],
+        "notes": "로컬 Ollama Mistral. 검증 필요"
+      }
+    ],
+    "live_models": [
+      "cerebras-llama31-8b",
+      "cerebras-llama33-70b",
+      "groq-llama31-8b",
+      "groq-llama33-70b",
+      "groq-llama3-70b-8192",
+      "groq-llama3-8b-8192",
+      "groq-mixtral-8x7b",
+      "hf-llama31-8b-cerebras",
+      "or-gemini-flash-lite",
+      "or-step-flash",
+      "or-gpt-oss-free",
+      "cohere-command-r-plus",
+      "cohere-command-r",
+      "gemini-flash-lite",
+      "gemini-2-5-flash",
+      "sambanova-llama33-70b",
+      "sambanova-deepseek-v3",
+      "sambanova-llama4-maverick"
+    ],
+    "dead_models": [
+      "or-qwen3-plus",
+      "or-devstral-free",
+      "or-nemotron-free",
+      "chutes-llama70b",
+      "chutes-deepseek-r1"
+    ],
+    "discarded_models": [
+      "sambanova-llama70b",
+      "hyperbolic-llama70b",
+      "hyperbolic-deepseek-r1"
+    ],
+    "replacement_map": {
+      "or-qwen3-plus": "or-gemini-flash-lite",
+      "or-devstral-free": "or-gpt-oss-free",
+      "or-nemotron-free": "or-gpt-oss-free",
+      "or-qwen3-coder-free": "or-gpt-oss-free",
+      "sambanova-llama70b": "cerebras-llama31-8b"
+    },
+    "recommended_pipeline": {
+      "step1_research": "groq-llama31-8b",
+      "step2_plan": "cerebras-llama31-8b",
+      "step3_json": "or-gpt-oss-free",
+      "fallback_chain": [
+        "or-gemini-flash-lite",
+        "or-step-flash"
+      ]
+    },
+    "free_models_by_provider": {
+      "cloudflare": [],
+      "openrouter": [
+        {
+          "id": "inclusionai/ling-2.6-1t:free",
+          "name": "inclusionAI: Ling-2.6-1T (free)",
+          "context_length": 262144,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "tencent/hy3-preview:free",
+          "name": "Tencent: Hy3 preview (free)",
+          "context_length": 262144,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "inclusionai/ling-2.6-flash:free",
+          "name": "inclusionAI: Ling-2.6-flash (free)",
+          "context_length": 262144,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "baidu/qianfan-ocr-fast:free",
+          "name": "Baidu: Qianfan-OCR-Fast (free)",
+          "context_length": 65536,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "google/gemma-4-26b-a4b-it:free",
+          "name": "Google: Gemma 4 26B A4B  (free)",
+          "context_length": 262144,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "google/gemma-4-31b-it:free",
+          "name": "Google: Gemma 4 31B (free)",
+          "context_length": 262144,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "nvidia/nemotron-3-super-120b-a12b:free",
+          "name": "NVIDIA: Nemotron 3 Super (free)",
+          "context_length": 262144,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "minimax/minimax-m2.5:free",
+          "name": "MiniMax: MiniMax M2.5 (free)",
+          "context_length": 196608,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "liquid/lfm-2.5-1.2b-thinking:free",
+          "name": "LiquidAI: LFM2.5-1.2B-Thinking (free)",
+          "context_length": 32768,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "liquid/lfm-2.5-1.2b-instruct:free",
+          "name": "LiquidAI: LFM2.5-1.2B-Instruct (free)",
+          "context_length": 32768,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "nvidia/nemotron-3-nano-30b-a3b:free",
+          "name": "NVIDIA: Nemotron 3 Nano 30B A3B (free)",
+          "context_length": 256000,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "nvidia/nemotron-nano-12b-v2-vl:free",
+          "name": "NVIDIA: Nemotron Nano 12B 2 VL (free)",
+          "context_length": 128000,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "qwen/qwen3-next-80b-a3b-instruct:free",
+          "name": "Qwen: Qwen3 Next 80B A3B Instruct (free)",
+          "context_length": 262144,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "nvidia/nemotron-nano-9b-v2:free",
+          "name": "NVIDIA: Nemotron Nano 9B V2 (free)",
+          "context_length": 128000,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "openai/gpt-oss-120b:free",
+          "name": "OpenAI: gpt-oss-120b (free)",
+          "context_length": 131072,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "openai/gpt-oss-20b:free",
+          "name": "OpenAI: gpt-oss-20b (free)",
+          "context_length": 131072,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "z-ai/glm-4.5-air:free",
+          "name": "Z.ai: GLM 4.5 Air (free)",
+          "context_length": 131072,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "qwen/qwen3-coder:free",
+          "name": "Qwen: Qwen3 Coder 480B A35B (free)",
+          "context_length": 262000,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+          "name": "Venice: Uncensored (free)",
+          "context_length": 32768,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "google/gemma-3n-e2b-it:free",
+          "name": "Google: Gemma 3n 2B (free)",
+          "context_length": 8192,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "google/gemma-3n-e4b-it:free",
+          "name": "Google: Gemma 3n 4B (free)",
+          "context_length": 8192,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "google/gemma-3-4b-it:free",
+          "name": "Google: Gemma 3 4B (free)",
+          "context_length": 32768,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "google/gemma-3-12b-it:free",
+          "name": "Google: Gemma 3 12B (free)",
+          "context_length": 32768,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "google/gemma-3-27b-it:free",
+          "name": "Google: Gemma 3 27B (free)",
+          "context_length": 131072,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "meta-llama/llama-3.3-70b-instruct:free",
+          "name": "Meta: Llama 3.3 70B Instruct (free)",
+          "context_length": 65536,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "meta-llama/llama-3.2-3b-instruct:free",
+          "name": "Meta: Llama 3.2 3B Instruct (free)",
+          "context_length": 131072,
+          "provider": "OpenRouter"
+        },
+        {
+          "id": "nousresearch/hermes-3-llama-3.1-405b:free",
+          "name": "Nous: Hermes 3 405B Instruct (free)",
+          "context_length": 131072,
+          "provider": "OpenRouter"
+        }
+      ],
+      "groq": [
+        {
+          "id": "whisper-large-v3",
+          "name": "whisper-large-v3",
+          "context_length": 448,
+          "provider": "Groq"
+        },
+        {
+          "id": "qwen/qwen3-32b",
+          "name": "qwen/qwen3-32b",
+          "context_length": 131072,
+          "provider": "Groq"
+        },
+        {
+          "id": "openai/gpt-oss-safeguard-20b",
+          "name": "openai/gpt-oss-safeguard-20b",
+          "context_length": 131072,
+          "provider": "Groq"
+        },
+        {
+          "id": "llama-3.1-8b-instant",
+          "name": "llama-3.1-8b-instant",
+          "context_length": 131072,
+          "provider": "Groq"
+        },
+        {
+          "id": "groq/compound",
+          "name": "groq/compound",
+          "context_length": 131072,
+          "provider": "Groq"
+        },
+        {
+          "id": "meta-llama/llama-4-scout-17b-16e-instruct",
+          "name": "meta-llama/llama-4-scout-17b-16e-instruct",
+          "context_length": 131072,
+          "provider": "Groq"
+        },
+        {
+          "id": "llama-3.3-70b-versatile",
+          "name": "llama-3.3-70b-versatile",
+          "context_length": 131072,
+          "provider": "Groq"
+        },
+        {
+          "id": "canopylabs/orpheus-arabic-saudi",
+          "name": "canopylabs/orpheus-arabic-saudi",
+          "context_length": 4000,
+          "provider": "Groq"
+        },
+        {
+          "id": "openai/gpt-oss-20b",
+          "name": "openai/gpt-oss-20b",
+          "context_length": 131072,
+          "provider": "Groq"
+        },
+        {
+          "id": "openai/gpt-oss-120b",
+          "name": "openai/gpt-oss-120b",
+          "context_length": 131072,
+          "provider": "Groq"
+        },
+        {
+          "id": "meta-llama/llama-prompt-guard-2-22m",
+          "name": "meta-llama/llama-prompt-guard-2-22m",
+          "context_length": 512,
+          "provider": "Groq"
+        },
+        {
+          "id": "allam-2-7b",
+          "name": "allam-2-7b",
+          "context_length": 4096,
+          "provider": "Groq"
+        },
+        {
+          "id": "groq/compound-mini",
+          "name": "groq/compound-mini",
+          "context_length": 131072,
+          "provider": "Groq"
+        },
+        {
+          "id": "canopylabs/orpheus-v1-english",
+          "name": "canopylabs/orpheus-v1-english",
+          "context_length": 4000,
+          "provider": "Groq"
+        },
+        {
+          "id": "whisper-large-v3-turbo",
+          "name": "whisper-large-v3-turbo",
+          "context_length": 448,
+          "provider": "Groq"
+        },
+        {
+          "id": "meta-llama/llama-prompt-guard-2-86m",
+          "name": "meta-llama/llama-prompt-guard-2-86m",
+          "context_length": 512,
+          "provider": "Groq"
+        }
+      ],
+      "gemini": [
+        {
+          "id": "gemini-2.5-flash",
+          "name": "Gemini 2.5 Flash",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.5-pro",
+          "name": "Gemini 2.5 Pro",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.0-flash",
+          "name": "Gemini 2.0 Flash",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.0-flash-001",
+          "name": "Gemini 2.0 Flash 001",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.0-flash-lite-001",
+          "name": "Gemini 2.0 Flash-Lite 001",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.0-flash-lite",
+          "name": "Gemini 2.0 Flash-Lite",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.5-flash-preview-tts",
+          "name": "Gemini 2.5 Flash Preview TTS",
+          "context_length": 8192,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.5-pro-preview-tts",
+          "name": "Gemini 2.5 Pro Preview TTS",
+          "context_length": 8192,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemma-3-1b-it",
+          "name": "Gemma 3 1B",
+          "context_length": 32768,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemma-3-4b-it",
+          "name": "Gemma 3 4B",
+          "context_length": 32768,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemma-3-12b-it",
+          "name": "Gemma 3 12B",
+          "context_length": 32768,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemma-3-27b-it",
+          "name": "Gemma 3 27B",
+          "context_length": 131072,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemma-3n-e4b-it",
+          "name": "Gemma 3n E4B",
+          "context_length": 8192,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemma-3n-e2b-it",
+          "name": "Gemma 3n E2B",
+          "context_length": 8192,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemma-4-26b-a4b-it",
+          "name": "Gemma 4 26B A4B IT",
+          "context_length": 262144,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemma-4-31b-it",
+          "name": "Gemma 4 31B IT",
+          "context_length": 262144,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-flash-latest",
+          "name": "Gemini Flash Latest",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-flash-lite-latest",
+          "name": "Gemini Flash-Lite Latest",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-pro-latest",
+          "name": "Gemini Pro Latest",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.5-flash-lite",
+          "name": "Gemini 2.5 Flash-Lite",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.5-flash-image",
+          "name": "Nano Banana",
+          "context_length": 32768,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-3-pro-preview",
+          "name": "Gemini 3 Pro Preview",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-3-flash-preview",
+          "name": "Gemini 3 Flash Preview",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-3.1-pro-preview",
+          "name": "Gemini 3.1 Pro Preview",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-3.1-pro-preview-customtools",
+          "name": "Gemini 3.1 Pro Preview Custom Tools",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-3.1-flash-lite-preview",
+          "name": "Gemini 3.1 Flash Lite Preview",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-3-pro-image-preview",
+          "name": "Nano Banana Pro",
+          "context_length": 131072,
+          "provider": "Gemini"
+        },
+        {
+          "id": "nano-banana-pro-preview",
+          "name": "Nano Banana Pro",
+          "context_length": 131072,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-3.1-flash-image-preview",
+          "name": "Nano Banana 2",
+          "context_length": 65536,
+          "provider": "Gemini"
+        },
+        {
+          "id": "lyria-3-clip-preview",
+          "name": "Lyria 3 Clip Preview",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "lyria-3-pro-preview",
+          "name": "Lyria 3 Pro Preview",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-3.1-flash-tts-preview",
+          "name": "Gemini 3.1 Flash TTS Preview",
+          "context_length": 8192,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-robotics-er-1.5-preview",
+          "name": "Gemini Robotics-ER 1.5 Preview",
+          "context_length": 1048576,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-robotics-er-1.6-preview",
+          "name": "Gemini Robotics-ER 1.6 Preview",
+          "context_length": 131072,
+          "provider": "Gemini"
+        },
+        {
+          "id": "gemini-2.5-computer-use-preview-10-2025",
+          "name": "Gemini 2.5 Computer Use Preview 10-2025",
+          "context_length": 131072,
+          "provider": "Gemini"
+        },
+        {
+          "id": "deep-research-max-preview-04-2026",
+          "name": "Deep Research Max Preview (Apr-21-2026)",
+          "context_length": 131072,
+          "provider": "Gemini"
+        },
+        {
+          "id": "deep-research-preview-04-2026",
+          "name": "Deep Research Preview (Apr-21-2026)",
+          "context_length": 131072,
+          "provider": "Gemini"
+        },
+        {
+          "id": "deep-research-pro-preview-12-2025",
+          "name": "Deep Research Pro Preview (Dec-12-2025)",
+          "context_length": 131072,
+          "provider": "Gemini"
+        }
+      ],
+      "huggingface": [
+        {
+          "id": "deepseek-ai/DeepSeek-V4-Pro",
+          "name": "deepseek-ai/DeepSeek-V4-Pro",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "moonshotai/Kimi-K2.6",
+          "name": "moonshotai/Kimi-K2.6",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "google/gemma-4-31B-it",
+          "name": "google/gemma-4-31B-it",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-5.1",
+          "name": "zai-org/GLM-5.1",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "MiniMaxAI/MiniMax-M2.7",
+          "name": "MiniMaxAI/MiniMax-M2.7",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "google/gemma-4-26B-A4B-it",
+          "name": "google/gemma-4-26B-A4B-it",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3.5-9B",
+          "name": "Qwen/Qwen3.5-9B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen2.5-7B-Instruct",
+          "name": "Qwen/Qwen2.5-7B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "openai/gpt-oss-120b",
+          "name": "openai/gpt-oss-120b",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Llama-3.1-8B-Instruct",
+          "name": "meta-llama/Llama-3.1-8B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1",
+          "name": "deepseek-ai/DeepSeek-R1",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-Coder-Next",
+          "name": "Qwen/Qwen3-Coder-Next",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "moonshotai/Kimi-K2.5",
+          "name": "moonshotai/Kimi-K2.5",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "openai/gpt-oss-20b",
+          "name": "openai/gpt-oss-20b",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3.5-35B-A3B",
+          "name": "Qwen/Qwen3.5-35B-A3B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3.5-27B",
+          "name": "Qwen/Qwen3.5-27B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-8B",
+          "name": "Qwen/Qwen3-8B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+          "name": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-VL-8B-Instruct",
+          "name": "Qwen/Qwen3-VL-8B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.7-Flash",
+          "name": "zai-org/GLM-4.7-Flash",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3.5-397B-A17B",
+          "name": "Qwen/Qwen3.5-397B-A17B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-4B-Instruct-2507",
+          "name": "Qwen/Qwen3-4B-Instruct-2507",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Meta-Llama-3-8B-Instruct",
+          "name": "meta-llama/Meta-Llama-3-8B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3.5-122B-A10B",
+          "name": "Qwen/Qwen3.5-122B-A10B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-5.1-FP8",
+          "name": "zai-org/GLM-5.1-FP8",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Llama-3.3-70B-Instruct",
+          "name": "meta-llama/Llama-3.3-70B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Llama-3.2-1B-Instruct",
+          "name": "meta-llama/Llama-3.2-1B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-5",
+          "name": "zai-org/GLM-5",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-V3",
+          "name": "deepseek-ai/DeepSeek-V3",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "swiss-ai/Apertus-8B-Instruct-2509",
+          "name": "swiss-ai/Apertus-8B-Instruct-2509",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-VL-30B-A3B-Instruct",
+          "name": "Qwen/Qwen3-VL-30B-A3B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "XiaomiMiMo/MiMo-V2-Flash",
+          "name": "XiaomiMiMo/MiMo-V2-Flash",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "openai/gpt-oss-safeguard-20b",
+          "name": "openai/gpt-oss-safeguard-20b",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "katanemo/Arch-Router-1.5B",
+          "name": "katanemo/Arch-Router-1.5B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+          "name": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-V3.1",
+          "name": "deepseek-ai/DeepSeek-V3.1",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "moonshotai/Kimi-K2-Instruct",
+          "name": "moonshotai/Kimi-K2-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-V3.2-Exp",
+          "name": "deepseek-ai/DeepSeek-V3.2-Exp",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+          "name": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-32B",
+          "name": "Qwen/Qwen3-32B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-V3-0324",
+          "name": "deepseek-ai/DeepSeek-V3-0324",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+          "name": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-30B-A3B",
+          "name": "Qwen/Qwen3-30B-A3B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.6V-Flash",
+          "name": "zai-org/GLM-4.6V-Flash",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/QwQ-32B",
+          "name": "Qwen/QwQ-32B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+          "name": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/c4ai-command-r7b-12-2024",
+          "name": "CohereLabs/c4ai-command-r7b-12-2024",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "MiniMaxAI/MiniMax-M2.5",
+          "name": "MiniMaxAI/MiniMax-M2.5",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "google/gemma-3-27b-it",
+          "name": "google/gemma-3-27b-it",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "NousResearch/Hermes-2-Pro-Llama-3-8B",
+          "name": "NousResearch/Hermes-2-Pro-Llama-3-8B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.7",
+          "name": "zai-org/GLM-4.7",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen2.5-Coder-32B-Instruct",
+          "name": "Qwen/Qwen2.5-Coder-32B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Llama-4-Maverick-17B-128E-Instruct",
+          "name": "meta-llama/Llama-4-Maverick-17B-128E-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1-0528",
+          "name": "deepseek-ai/DeepSeek-R1-0528",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.6V",
+          "name": "zai-org/GLM-4.6V",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+          "name": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "moonshotai/Kimi-K2-Thinking",
+          "name": "moonshotai/Kimi-K2-Thinking",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-4B-Thinking-2507",
+          "name": "Qwen/Qwen3-4B-Thinking-2507",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-Coder-480B-A35B-Instruct",
+          "name": "Qwen/Qwen3-Coder-480B-A35B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+          "name": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Sao10K/L3-8B-Lunaris-v1",
+          "name": "Sao10K/L3-8B-Lunaris-v1",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen2.5-Coder-7B-Instruct",
+          "name": "Qwen/Qwen2.5-Coder-7B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.5V",
+          "name": "zai-org/GLM-4.5V",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Llama-Guard-4-12B",
+          "name": "meta-llama/Llama-Guard-4-12B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen2.5-72B-Instruct",
+          "name": "Qwen/Qwen2.5-72B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+          "name": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-VL-235B-A22B-Thinking",
+          "name": "Qwen/Qwen3-VL-235B-A22B-Thinking",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "google/gemma-3n-E4B-it",
+          "name": "google/gemma-3n-E4B-it",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-Prover-V2-671B",
+          "name": "deepseek-ai/DeepSeek-Prover-V2-671B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+          "name": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "moonshotai/Kimi-K2-Instruct-0905",
+          "name": "moonshotai/Kimi-K2-Instruct-0905",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.5-Air",
+          "name": "zai-org/GLM-4.5-Air",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-V3.1-Terminus",
+          "name": "deepseek-ai/DeepSeek-V3.1-Terminus",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.6",
+          "name": "zai-org/GLM-4.6",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-Coder-Next-FP8",
+          "name": "Qwen/Qwen3-Coder-Next-FP8",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+          "name": "Qwen/Qwen2.5-Coder-3B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-14B",
+          "name": "Qwen/Qwen3-14B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/aya-vision-32b",
+          "name": "CohereLabs/aya-vision-32b",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8",
+          "name": "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+          "name": "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-235B-A22B",
+          "name": "Qwen/Qwen3-235B-A22B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/command-a-vision-07-2025",
+          "name": "CohereLabs/command-a-vision-07-2025",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepcogito/cogito-671b-v2.1",
+          "name": "deepcogito/cogito-671b-v2.1",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "baidu/ERNIE-4.5-VL-424B-A47B-Base-PT",
+          "name": "baidu/ERNIE-4.5-VL-424B-A47B-Base-PT",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "alpindale/WizardLM-2-8x22B",
+          "name": "alpindale/WizardLM-2-8x22B",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "aisingapore/Gemma-SEA-LION-v4-27B-IT",
+          "name": "aisingapore/Gemma-SEA-LION-v4-27B-IT",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "deepcogito/cogito-671b-v2.1-FP8",
+          "name": "deepcogito/cogito-671b-v2.1-FP8",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-VL-235B-A22B-Instruct",
+          "name": "Qwen/Qwen3-VL-235B-A22B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Meta-Llama-3-70B-Instruct",
+          "name": "meta-llama/Meta-Llama-3-70B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "swiss-ai/Apertus-70B-Instruct-2509",
+          "name": "swiss-ai/Apertus-70B-Instruct-2509",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "EssentialAI/rnj-1-instruct",
+          "name": "EssentialAI/rnj-1-instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/AutoGLM-Phone-9B-Multilingual",
+          "name": "zai-org/AutoGLM-Phone-9B-Multilingual",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Sao10K/L3-8B-Stheno-v3.2",
+          "name": "Sao10K/L3-8B-Stheno-v3.2",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "aisingapore/Qwen-SEA-LION-v4-32B-IT",
+          "name": "aisingapore/Qwen-SEA-LION-v4-32B-IT",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/c4ai-command-r-08-2024",
+          "name": "CohereLabs/c4ai-command-r-08-2024",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-VL-30B-A3B-Thinking",
+          "name": "Qwen/Qwen3-VL-30B-A3B-Thinking",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Sao10K/L3-70B-Euryale-v2.1",
+          "name": "Sao10K/L3-70B-Euryale-v2.1",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "allenai/Olmo-3-7B-Instruct",
+          "name": "allenai/Olmo-3-7B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.5",
+          "name": "zai-org/GLM-4.5",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/aya-expanse-32b",
+          "name": "CohereLabs/aya-expanse-32b",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4-32B-0414",
+          "name": "zai-org/GLM-4-32B-0414",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "dicta-il/DictaLM-3.0-24B-Thinking",
+          "name": "dicta-il/DictaLM-3.0-24B-Thinking",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.6-FP8",
+          "name": "zai-org/GLM-4.6-FP8",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/c4ai-command-r7b-arabic-02-2025",
+          "name": "CohereLabs/c4ai-command-r7b-arabic-02-2025",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "MiniMaxAI/MiniMax-M1-80k",
+          "name": "MiniMaxAI/MiniMax-M1-80k",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "utter-project/EuroLLM-22B-Instruct-2512",
+          "name": "utter-project/EuroLLM-22B-Instruct-2512",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.7-FP8",
+          "name": "zai-org/GLM-4.7-FP8",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/c4ai-command-a-03-2025",
+          "name": "CohereLabs/c4ai-command-a-03-2025",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "baidu/ERNIE-4.5-300B-A47B-Base-PT",
+          "name": "baidu/ERNIE-4.5-300B-A47B-Base-PT",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.5V-FP8",
+          "name": "zai-org/GLM-4.5V-FP8",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/command-a-reasoning-08-2025",
+          "name": "CohereLabs/command-a-reasoning-08-2025",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-235B-A22B-Thinking-2507",
+          "name": "Qwen/Qwen3-235B-A22B-Thinking-2507",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "zai-org/GLM-4.6V-FP8",
+          "name": "zai-org/GLM-4.6V-FP8",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/command-a-translate-08-2025",
+          "name": "CohereLabs/command-a-translate-08-2025",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen3-Next-80B-A3B-Thinking",
+          "name": "Qwen/Qwen3-Next-80B-A3B-Thinking",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "meta-llama/Llama-3.1-70B-Instruct",
+          "name": "meta-llama/Llama-3.1-70B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/tiny-aya-global",
+          "name": "CohereLabs/tiny-aya-global",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "Qwen/Qwen2.5-VL-72B-Instruct",
+          "name": "Qwen/Qwen2.5-VL-72B-Instruct",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "MiniMaxAI/MiniMax-M2",
+          "name": "MiniMaxAI/MiniMax-M2",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/tiny-aya-water",
+          "name": "CohereLabs/tiny-aya-water",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "MiniMaxAI/MiniMax-M2.1",
+          "name": "MiniMaxAI/MiniMax-M2.1",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/tiny-aya-earth",
+          "name": "CohereLabs/tiny-aya-earth",
+          "context_length": null,
+          "provider": "HuggingFace"
+        },
+        {
+          "id": "CohereLabs/tiny-aya-fire",
+          "name": "CohereLabs/tiny-aya-fire",
+          "context_length": null,
+          "provider": "HuggingFace"
+        }
+      ],
+      "ollama": [],
+      "cerebras": [
+        {
+          "id": "zai-glm-4.7",
+          "name": "zai-glm-4.7",
+          "provider": "Cerebras"
+        },
+        {
+          "id": "qwen-3-235b-a22b-instruct-2507",
+          "name": "qwen-3-235b-a22b-instruct-2507",
+          "provider": "Cerebras"
+        },
+        {
+          "id": "gpt-oss-120b",
+          "name": "gpt-oss-120b",
+          "provider": "Cerebras"
+        },
+        {
+          "id": "llama3.1-8b",
+          "name": "llama3.1-8b",
+          "provider": "Cerebras"
+        }
+      ],
+      "sambanova": [
+        {
+          "id": "DeepSeek-V3.1",
+          "name": "DeepSeek-V3.1",
+          "context_length": null,
+          "provider": "SambaNova"
+        },
+        {
+          "id": "DeepSeek-V3.1-cb",
+          "name": "DeepSeek-V3.1-cb",
+          "context_length": null,
+          "provider": "SambaNova"
+        },
+        {
+          "id": "DeepSeek-V3.2",
+          "name": "DeepSeek-V3.2",
+          "context_length": null,
+          "provider": "SambaNova"
+        },
+        {
+          "id": "Llama-4-Maverick-17B-128E-Instruct",
+          "name": "Llama-4-Maverick-17B-128E-Instruct",
+          "context_length": null,
+          "provider": "SambaNova"
+        },
+        {
+          "id": "Meta-Llama-3.3-70B-Instruct",
+          "name": "Meta-Llama-3.3-70B-Instruct",
+          "context_length": null,
+          "provider": "SambaNova"
+        },
+        {
+          "id": "MiniMax-M2.5",
+          "name": "MiniMax-M2.5",
+          "context_length": null,
+          "provider": "SambaNova"
+        },
+        {
+          "id": "gemma-3-12b-it",
+          "name": "gemma-3-12b-it",
+          "context_length": null,
+          "provider": "SambaNova"
+        },
+        {
+          "id": "gpt-oss-120b",
+          "name": "gpt-oss-120b",
+          "context_length": null,
+          "provider": "SambaNova"
+        }
+      ],
+      "cohere": [
+        {
+          "id": "c4ai-aya-expanse-32b",
+          "name": "c4ai-aya-expanse-32b",
+          "context_length": 128000,
+          "provider": "Cohere"
+        },
+        {
+          "id": "c4ai-aya-vision-32b",
+          "name": "c4ai-aya-vision-32b",
+          "context_length": 16384,
+          "provider": "Cohere"
+        },
+        {
+          "id": "command-a-03-2025",
+          "name": "command-a-03-2025",
+          "context_length": 288000,
+          "provider": "Cohere"
+        },
+        {
+          "id": "command-a-reasoning-08-2025",
+          "name": "command-a-reasoning-08-2025",
+          "context_length": 288768,
+          "provider": "Cohere"
+        },
+        {
+          "id": "command-a-translate-08-2025",
+          "name": "command-a-translate-08-2025",
+          "context_length": 8992,
+          "provider": "Cohere"
+        },
+        {
+          "id": "command-a-vision-07-2025",
+          "name": "command-a-vision-07-2025",
+          "context_length": 128000,
+          "provider": "Cohere"
+        },
+        {
+          "id": "command-r-08-2024",
+          "name": "command-r-08-2024",
+          "context_length": 128000,
+          "provider": "Cohere"
+        },
+        {
+          "id": "command-r-plus-08-2024",
+          "name": "command-r-plus-08-2024",
+          "context_length": 128000,
+          "provider": "Cohere"
+        },
+        {
+          "id": "command-r7b-12-2024",
+          "name": "command-r7b-12-2024",
+          "context_length": 132000,
+          "provider": "Cohere"
+        },
+        {
+          "id": "command-r7b-arabic-02-2025",
+          "name": "command-r7b-arabic-02-2025",
+          "context_length": 128000,
+          "provider": "Cohere"
+        }
+      ],
+      "hyperbolic": [
+        {
+          "id": "deepseek-ai/DeepSeek-V3-0324",
+          "name": "deepseek-ai/DeepSeek-V3-0324",
+          "context_length": 163840,
+          "provider": "Hyperbolic"
+        },
+        {
+          "id": "meta-llama/Llama-3.3-70B-Instruct",
+          "name": "meta-llama/Llama-3.3-70B-Instruct",
+          "context_length": 131072,
+          "provider": "Hyperbolic"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1",
+          "name": "deepseek-ai/DeepSeek-R1",
+          "context_length": 163840,
+          "provider": "Hyperbolic"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1-0528",
+          "name": "deepseek-ai/DeepSeek-R1-0528",
+          "context_length": 163840,
+          "provider": "Hyperbolic"
+        },
+        {
+          "id": "Qwen/Qwen3-Coder-480B-A35B-Instruct",
+          "name": "Qwen/Qwen3-Coder-480B-A35B-Instruct",
+          "context_length": 262144,
+          "provider": "Hyperbolic"
+        }
+      ],
+      "chutes": [
+        {
+          "id": "Qwen/Qwen3-32B-TEE",
+          "name": "Qwen/Qwen3-32B-TEE",
+          "context_length": 40960,
+          "provider": "Chutes"
+        },
+        {
+          "id": "google/gemma-4-31B-turbo-TEE",
+          "name": "google/gemma-4-31B-turbo-TEE",
+          "context_length": 131072,
+          "provider": "Chutes"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-V3.1-TEE",
+          "name": "deepseek-ai/DeepSeek-V3.1-TEE",
+          "context_length": 163840,
+          "provider": "Chutes"
+        },
+        {
+          "id": "moonshotai/Kimi-K2.5-TEE",
+          "name": "moonshotai/Kimi-K2.5-TEE",
+          "context_length": 262144,
+          "provider": "Chutes"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-V3.2-TEE",
+          "name": "deepseek-ai/DeepSeek-V3.2-TEE",
+          "context_length": 131072,
+          "provider": "Chutes"
+        },
+        {
+          "id": "openai/gpt-oss-120b-TEE",
+          "name": "openai/gpt-oss-120b-TEE",
+          "context_length": 131072,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen3.5-397B-A17B-TEE",
+          "name": "Qwen/Qwen3.5-397B-A17B-TEE",
+          "context_length": 262144,
+          "provider": "Chutes"
+        },
+        {
+          "id": "MiniMaxAI/MiniMax-M2.5-TEE",
+          "name": "MiniMaxAI/MiniMax-M2.5-TEE",
+          "context_length": 196608,
+          "provider": "Chutes"
+        },
+        {
+          "id": "zai-org/GLM-5.1-TEE",
+          "name": "zai-org/GLM-5.1-TEE",
+          "context_length": 202752,
+          "provider": "Chutes"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-V3-0324-TEE",
+          "name": "deepseek-ai/DeepSeek-V3-0324-TEE",
+          "context_length": 163840,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen3-235B-A22B-Instruct-2507-TEE",
+          "name": "Qwen/Qwen3-235B-A22B-Instruct-2507-TEE",
+          "context_length": 262144,
+          "provider": "Chutes"
+        },
+        {
+          "id": "XiaomiMiMo/MiMo-V2-Flash-TEE",
+          "name": "XiaomiMiMo/MiMo-V2-Flash-TEE",
+          "context_length": 262144,
+          "provider": "Chutes"
+        },
+        {
+          "id": "zai-org/GLM-5-Turbo",
+          "name": "zai-org/GLM-5-Turbo",
+          "context_length": 202752,
+          "provider": "Chutes"
+        },
+        {
+          "id": "tngtech/DeepSeek-TNG-R1T2-Chimera-TEE",
+          "name": "tngtech/DeepSeek-TNG-R1T2-Chimera-TEE",
+          "context_length": 163840,
+          "provider": "Chutes"
+        },
+        {
+          "id": "zai-org/GLM-5-TEE",
+          "name": "zai-org/GLM-5-TEE",
+          "context_length": 202752,
+          "provider": "Chutes"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1-0528-TEE",
+          "name": "deepseek-ai/DeepSeek-R1-0528-TEE",
+          "context_length": 163840,
+          "provider": "Chutes"
+        },
+        {
+          "id": "zai-org/GLM-4.7-TEE",
+          "name": "zai-org/GLM-4.7-TEE",
+          "context_length": 202752,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen3.6-27B-TEE",
+          "name": "Qwen/Qwen3.6-27B-TEE",
+          "context_length": 262144,
+          "provider": "Chutes"
+        },
+        {
+          "id": "moonshotai/Kimi-K2.6-TEE",
+          "name": "moonshotai/Kimi-K2.6-TEE",
+          "context_length": 262144,
+          "provider": "Chutes"
+        },
+        {
+          "id": "unsloth/gemma-3-27b-it",
+          "name": "unsloth/gemma-3-27b-it",
+          "context_length": 128000,
+          "provider": "Chutes"
+        },
+        {
+          "id": "zai-org/GLM-4.7-FP8",
+          "name": "zai-org/GLM-4.7-FP8",
+          "context_length": 202752,
+          "provider": "Chutes"
+        },
+        {
+          "id": "unsloth/Llama-3.2-3B-Instruct",
+          "name": "unsloth/Llama-3.2-3B-Instruct",
+          "context_length": null,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen3-Coder-Next-TEE",
+          "name": "Qwen/Qwen3-Coder-Next-TEE",
+          "context_length": 262144,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen2.5-72B-Instruct",
+          "name": "Qwen/Qwen2.5-72B-Instruct",
+          "context_length": 32768,
+          "provider": "Chutes"
+        },
+        {
+          "id": "unsloth/gemma-3-12b-it",
+          "name": "unsloth/gemma-3-12b-it",
+          "context_length": 131072,
+          "provider": "Chutes"
+        },
+        {
+          "id": "NousResearch/DeepHermes-3-Mistral-24B-Preview",
+          "name": "NousResearch/DeepHermes-3-Mistral-24B-Preview",
+          "context_length": 32768,
+          "provider": "Chutes"
+        },
+        {
+          "id": "unsloth/gemma-3-4b-it",
+          "name": "unsloth/gemma-3-4b-it",
+          "context_length": 96000,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+          "name": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+          "context_length": 262144,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen2.5-Coder-32B-Instruct",
+          "name": "Qwen/Qwen2.5-Coder-32B-Instruct",
+          "context_length": 32768,
+          "provider": "Chutes"
+        },
+        {
+          "id": "NousResearch/Hermes-4-14B",
+          "name": "NousResearch/Hermes-4-14B",
+          "context_length": 40960,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen2.5-VL-32B-Instruct",
+          "name": "Qwen/Qwen2.5-VL-32B-Instruct",
+          "context_length": 16384,
+          "provider": "Chutes"
+        },
+        {
+          "id": "zai-org/GLM-4.6V",
+          "name": "zai-org/GLM-4.6V",
+          "context_length": 131072,
+          "provider": "Chutes"
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+          "name": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+          "context_length": 131072,
+          "provider": "Chutes"
+        },
+        {
+          "id": "unsloth/Mistral-Nemo-Instruct-2407",
+          "name": "unsloth/Mistral-Nemo-Instruct-2407",
+          "context_length": 131072,
+          "provider": "Chutes"
+        },
+        {
+          "id": "unsloth/Llama-3.2-1B-Instruct",
+          "name": "unsloth/Llama-3.2-1B-Instruct",
+          "context_length": null,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen3Guard-Gen-0.6B",
+          "name": "Qwen/Qwen3Guard-Gen-0.6B",
+          "context_length": null,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen3-30B-A3B",
+          "name": "Qwen/Qwen3-30B-A3B",
+          "context_length": 40960,
+          "provider": "Chutes"
+        },
+        {
+          "id": "rednote-hilab/dots.ocr",
+          "name": "rednote-hilab/dots.ocr",
+          "context_length": 131072,
+          "provider": "Chutes"
+        },
+        {
+          "id": "Qwen/Qwen3-235B-A22B-Thinking-2507",
+          "name": "Qwen/Qwen3-235B-A22B-Thinking-2507",
+          "context_length": 262144,
+          "provider": "Chutes"
+        }
+      ],
+      "deepseek": []
+    }
+  },
+  "bindings": [
+    {
+      "projectId": "CommonAI",
+      "dashboardProjectId": "commonai",
+      "displayName": "CommonAI",
+      "targetType": "node",
+      "patchMode": "file_edit",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "groq-llama33-70b",
+      "fallbackModelIds": [
+        "groq-llama31-8b",
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": null,
+      "firestorePatched": false,
+      "notes": "공통 라이브러리. 파일 직접 수정. 변경 시 하위 프로젝트 파급 주의"
+    },
+    {
+      "projectId": "career-final",
+      "dashboardProjectId": "career-aptitude",
+      "displayName": "직업진로 탐색",
+      "targetType": "firebase",
+      "patchMode": "firestore",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "cerebras-llama33-70b",
+      "fallbackModelIds": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "career-aptitude-final",
+      "firestorePatched": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열"
+    },
+    {
+      "projectId": "healthy-final",
+      "dashboardProjectId": "healthy",
+      "displayName": "건강 AI 어드바이저",
+      "targetType": "firebase",
+      "patchMode": "firestore",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "cerebras-llama33-70b",
+      "fallbackModelIds": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "healthy-final",
+      "firestorePatched": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열"
+    },
+    {
+      "projectId": "mbti-final",
+      "dashboardProjectId": "mbti",
+      "displayName": "MBTI AI 성격 분석",
+      "targetType": "firebase",
+      "patchMode": "firestore",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "cerebras-llama33-70b",
+      "fallbackModelIds": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "mbti-final",
+      "firestorePatched": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열"
+    },
+    {
+      "projectId": "tarot-final",
+      "dashboardProjectId": "tarot",
+      "displayName": "타로 카드 AI 리딩",
+      "targetType": "firebase",
+      "patchMode": "firestore",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "cerebras-llama33-70b",
+      "fallbackModelIds": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "tarot-final-1b241",
+      "firestorePatched": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열"
+    },
+    {
+      "projectId": "values-test-final",
+      "dashboardProjectId": "values",
+      "displayName": "가치관 테스트",
+      "targetType": "firebase",
+      "patchMode": "firestore",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "cerebras-llama33-70b",
+      "fallbackModelIds": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "values-test-final",
+      "firestorePatched": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열"
+    },
+    {
+      "projectId": "core-competencies-final",
+      "dashboardProjectId": "core-competencies",
+      "displayName": "핵심역량 진단",
+      "targetType": "firebase",
+      "patchMode": "firestore",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "cerebras-llama33-70b",
+      "fallbackModelIds": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "core-competencies-finai",
+      "firestorePatched": true,
+      "notes": "Cerebras -> OpenRouter Gemini -> OpenRouter Step-flash 계열"
+    },
+    {
+      "projectId": "multiple-intelligence-final",
+      "dashboardProjectId": "multiple-intelligence",
+      "displayName": "다중지능 검사",
+      "targetType": "firebase",
+      "patchMode": "file_edit",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "groq-llama33-70b",
+      "fallbackModelIds": [
+        "groq-llama31-8b",
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "multiple-intelligence-final",
+      "firestorePatched": false,
+      "notes": "Groq 3키 로테이션 + OpenRouter 폴백. 파일 직접 수정 모드"
+    },
+    {
+      "projectId": "saju-kang",
+      "dashboardProjectId": "saju",
+      "displayName": "사주팔자 AI 분석",
+      "targetType": "firebase",
+      "patchMode": "file_edit",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "groq-llama33-70b",
+      "fallbackModelIds": [
+        "groq-llama31-8b",
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "saju-kang",
+      "firestorePatched": false,
+      "notes": "Groq 4키 + Cerebras 로테이션. defineSecret 구조. 파일 직접 수정 모드"
+    },
+    {
+      "projectId": "kquant",
+      "dashboardProjectId": "kquant",
+      "displayName": "KQuant 주식 분석",
+      "targetType": "google-apps-script",
+      "patchMode": "manual_log",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "or-gpt-oss-free",
+      "fallbackModelIds": [
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": null,
+      "firestorePatched": false,
+      "notes": "GAS 환경. 코드 직접 접근 불가. auto_replace는 변경 제안 로그만 출력"
+    },
+    {
+      "projectId": "Lotto-generation",
+      "dashboardProjectId": "lotto",
+      "displayName": "로또 번호 생성기",
+      "targetType": "firebase",
+      "patchMode": "file_edit",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "or-gpt-oss-free",
+      "fallbackModelIds": [
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "lotto-generation",
+      "firestorePatched": false,
+      "notes": "primary or-qwen3-plus → or-step-flash로 교체(2026-04-27). 파일 직접 수정 모드"
+    },
+    {
+      "projectId": "Pension-lottery",
+      "dashboardProjectId": "pension",
+      "displayName": "연금복권 분석기",
+      "targetType": "firebase",
+      "patchMode": "file_edit",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "or-gpt-oss-free",
+      "fallbackModelIds": [
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": "pension-lottery",
+      "firestorePatched": false,
+      "notes": "primary or-qwen3-plus → or-step-flash로 교체(2026-04-27). 동적 랭킹 폴백 구조 유지"
+    },
+    {
+      "projectId": "multi-trend-dashboard-n8n",
+      "dashboardProjectId": "multi-trend",
+      "displayName": "Multi-trend n8n",
+      "targetType": "n8n",
+      "patchMode": "n8n_api",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "or-gpt-oss-free",
+      "fallbackModelIds": [
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": null,
+      "firestorePatched": false,
+      "notes": "n8n API 자동 패치. N8N_API_KEY 환경변수 필요"
+    },
+    {
+      "projectId": "cloudflare-multi-trend-dashboard",
+      "dashboardProjectId": "multi-trend",
+      "displayName": "Multi-trend Dashboard",
+      "targetType": "cloudflare-pages",
+      "patchMode": "manual_log",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "or-gpt-oss-free",
+      "fallbackModelIds": [
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": null,
+      "firestorePatched": false,
+      "notes": "Cloudflare Pages. 환경변수는 대시보드에서 설정. auto_replace는 변경 제안 로그만 출력"
+    },
+    {
+      "projectId": "cloudflare-korea-law",
+      "dashboardProjectId": "korean-law",
+      "displayName": "대한민국 법령 가이드",
+      "targetType": "cloudflare-pages",
+      "patchMode": "manual_log",
+      "applyMode": "auto",
+      "enabled": true,
+      "primaryModelId": "or-gpt-oss-free",
+      "fallbackModelIds": [
+        "or-qwen3-coder-free"
+      ],
+      "firebaseProjectId": null,
+      "firestorePatched": false,
+      "notes": "Cloudflare Pages 앱 (한국법). auto_replace는 변경 제안 로그만 출력"
+    },
+    {
+      "projectId": "Lotto-generation-v2-legacy",
+      "dashboardProjectId": null,
+      "displayName": "Lotto-generation-v2-legacy",
+      "targetType": "firebase",
+      "patchMode": "disabled",
+      "applyMode": "manual-approve",
+      "enabled": false,
+      "primaryModelId": "none",
+      "fallbackModelIds": [],
+      "firebaseProjectId": null,
+      "firestorePatched": false,
+      "notes": "레거시 경로. AI 모델 교체 대상에서 제외"
+    }
+  ],
+  "providers": {
+    "Cerebras": {
+      "name": "Cerebras",
+      "emoji": "🧠",
+      "desc": "초고속 추론",
+      "hasKey": true,
+      "keyName": "CEREBRAS_API_KEY",
+      "registeredModels": [
+        {
+          "id": "cerebras-llama31-8b",
+          "model": "llama3.1-8b",
+          "status": "✅ live"
+        },
+        {
+          "id": "cerebras-llama33-70b",
+          "model": "llama-3.3-70b",
+          "status": "✅ live"
+        }
+      ],
+      "freeCount": 4,
+      "primaryProjects": [
+        "직업진로 탐색",
+        "건강 AI 어드바이저",
+        "MBTI AI 성격 분석",
+        "타로 카드 AI 리딩",
+        "가치관 테스트",
+        "핵심역량 진단"
+      ],
+      "fallbackProjects": []
+    },
+    "Groq": {
+      "name": "Groq",
+      "emoji": "⚡",
+      "desc": "LPU 초저지연",
+      "hasKey": true,
+      "keyName": "GROQ_API_KEY",
+      "registeredModels": [
+        {
+          "id": "groq-llama31-8b",
+          "model": "llama-3.1-8b-instant",
+          "status": "✅ live"
+        },
+        {
+          "id": "groq-llama33-70b",
+          "model": "llama-3.3-70b-versatile",
+          "status": "✅ live (키 로테이션 필요)"
+        },
+        {
+          "id": "groq-llama3-70b-8192",
+          "model": "llama3-70b-8192",
+          "status": "✅ live"
+        },
+        {
+          "id": "groq-llama3-8b-8192",
+          "model": "llama3-8b-8192",
+          "status": "✅ live"
+        },
+        {
+          "id": "groq-mixtral-8x7b",
+          "model": "mixtral-8x7b-32768",
+          "status": "✅ live"
+        }
+      ],
+      "freeCount": 16,
+      "primaryProjects": [
+        "CommonAI",
+        "다중지능 검사",
+        "사주팔자 AI 분석"
+      ],
+      "fallbackProjects": []
+    },
+    "OpenRouter": {
+      "name": "OpenRouter",
+      "emoji": "🌐",
+      "desc": "멀티모델 라우팅",
+      "hasKey": true,
+      "keyName": "OPENROUTER_API_KEY",
+      "registeredModels": [
+        {
+          "id": "or-gemini-flash-lite",
+          "model": "google/gemini-2.0-flash-lite-001",
+          "status": "✅ live"
+        },
+        {
+          "id": "or-step-flash",
+          "model": "stepfun/step-3.5-flash",
+          "status": "✅ live"
+        },
+        {
+          "id": "or-gpt-oss-free",
+          "model": "openai/gpt-oss-120b:free",
+          "status": "✅ live"
+        },
+        {
+          "id": "or-qwen3-coder-free",
+          "model": "qwen/qwen3-coder:free",
+          "status": "⚠️ rate_limit (429)"
+        },
+        {
+          "id": "or-qwen3-plus",
+          "model": "qwen/qwen3-plus",
+          "status": "❌ dead (invalid model ID)"
+        },
+        {
+          "id": "or-devstral-free",
+          "model": "mistral/devstral-2:free",
+          "status": "❌ dead (invalid model ID)"
+        },
+        {
+          "id": "or-nemotron-free",
+          "model": "nvidia/nemotron-3-super-120b:free",
+          "status": "❌ dead (invalid model ID)"
+        }
+      ],
+      "freeCount": 27,
+      "primaryProjects": [
+        "KQuant 주식 분석",
+        "로또 번호 생성기",
+        "연금복권 분석기",
+        "Multi-trend n8n",
+        "Multi-trend Dashboard",
+        "대한민국 법령 가이드"
+      ],
+      "fallbackProjects": [
+        "CommonAI",
+        "CommonAI",
+        "직업진로 탐색",
+        "직업진로 탐색",
+        "건강 AI 어드바이저",
+        "건강 AI 어드바이저",
+        "MBTI AI 성격 분석",
+        "MBTI AI 성격 분석",
+        "타로 카드 AI 리딩",
+        "타로 카드 AI 리딩",
+        "가치관 테스트",
+        "가치관 테스트",
+        "핵심역량 진단",
+        "핵심역량 진단",
+        "다중지능 검사",
+        "다중지능 검사",
+        "사주팔자 AI 분석",
+        "사주팔자 AI 분석"
+      ]
+    },
+    "HuggingFace": {
+      "name": "HuggingFace",
+      "emoji": "🤗",
+      "desc": "오픈소스 허브",
+      "hasKey": true,
+      "keyName": "HF_TOKEN",
+      "registeredModels": [
+        {
+          "id": "hf-llama31-8b-cerebras",
+          "model": "meta-llama/Llama-3.1-8B-Instruct:cerebras",
+          "status": "✅ live"
+        }
+      ],
+      "freeCount": 123,
+      "primaryProjects": [],
+      "fallbackProjects": []
+    },
+    "Gemini": {
+      "name": "Gemini",
+      "emoji": "💎",
+      "desc": "Google 멀티모달",
+      "hasKey": true,
+      "keyName": "GEMINI_API_KEY",
+      "registeredModels": [
+        {
+          "id": "gemini-flash-lite",
+          "model": "gemini-2.0-flash-lite-001",
+          "status": "✅ live (OpenRouter 경유 확인)"
+        },
+        {
+          "id": "gemini-2-5-flash",
+          "model": "gemini-2.5-flash",
+          "status": "✅ live"
+        },
+        {
+          "id": "gemini-flash",
+          "model": "gemini-2.0-flash",
+          "status": "⚠️ 미검증"
+        }
+      ],
+      "freeCount": 38,
+      "primaryProjects": [],
+      "fallbackProjects": []
+    },
+    "Chutes": {
+      "name": "Chutes",
+      "emoji": "🔗",
+      "desc": "분산 추론",
+      "hasKey": true,
+      "keyName": "CHUTES_API_KEY",
+      "registeredModels": [
+        {
+          "id": "chutes-llama70b",
+          "model": "chutesai/Llama-4-Scout-17B-16E-Instruct",
+          "status": "❌ dead (HTTP 404 — 모델 ID 변경)"
+        },
+        {
+          "id": "chutes-deepseek-r1",
+          "model": "deepseek-ai/DeepSeek-R1",
+          "status": "❌ dead (HTTP 404 — 모델 ID 변경)"
+        }
+      ],
+      "freeCount": 39,
+      "primaryProjects": [],
+      "fallbackProjects": []
+    },
+    "Hyperbolic": {
+      "name": "Hyperbolic",
+      "emoji": "📐",
+      "desc": "GPU 클라우드",
+      "hasKey": true,
+      "keyName": "HYPERBOLIC_API_KEY",
+      "registeredModels": [
+        {
+          "id": "hyperbolic-llama70b",
+          "model": "meta-llama/Llama-3.3-70B-Instruct",
+          "status": "🗑️ 폐기"
+        },
+        {
+          "id": "hyperbolic-deepseek-r1",
+          "model": "deepseek-ai/DeepSeek-R1",
+          "status": "🗑️ 폐기"
+        }
+      ],
+      "freeCount": 5,
+      "primaryProjects": [],
+      "fallbackProjects": []
+    },
+    "Cohere": {
+      "name": "Cohere",
+      "emoji": "🔮",
+      "desc": "엔터프라이즈 NLP",
+      "hasKey": true,
+      "keyName": "COHERE_API_KEY",
+      "registeredModels": [
+        {
+          "id": "cohere-command-r-plus",
+          "model": "command-r-plus-08-2024",
+          "status": "✅ live"
+        },
+        {
+          "id": "cohere-command-r",
+          "model": "command-r-08-2024",
+          "status": "✅ live"
+        }
+      ],
+      "freeCount": 10,
+      "primaryProjects": [],
+      "fallbackProjects": []
+    },
+    "SambaNova": {
+      "name": "SambaNova",
+      "emoji": "🚀",
+      "desc": "RDU 전용 칩",
+      "hasKey": true,
+      "keyName": "SAMBANOVA_API_KEY",
+      "registeredModels": [
+        {
+          "id": "sambanova-llama33-70b",
+          "model": "Meta-Llama-3.3-70B-Instruct",
+          "status": "✅ live"
+        },
+        {
+          "id": "sambanova-deepseek-v3",
+          "model": "DeepSeek-V3.1",
+          "status": "✅ live"
+        },
+        {
+          "id": "sambanova-llama4-maverick",
+          "model": "Llama-4-Maverick-17B-128E-Instruct",
+          "status": "✅ live"
+        }
+      ],
+      "freeCount": 8,
+      "primaryProjects": [],
+      "fallbackProjects": []
+    },
+    "DeepSeek": {
+      "name": "DeepSeek",
+      "emoji": "🔍",
+      "desc": "오픈소스 추론",
+      "hasKey": true,
+      "keyName": "DEEPSEEK_API_KEY",
+      "registeredModels": [],
+      "freeCount": 0,
+      "primaryProjects": [],
+      "fallbackProjects": []
+    },
+    "Cloudflare": {
+      "name": "Cloudflare",
+      "emoji": "☁️",
+      "desc": "Workers AI 엣지",
+      "hasKey": false,
+      "keyName": "wrangler",
+      "registeredModels": [],
+      "freeCount": 0,
+      "primaryProjects": [],
+      "fallbackProjects": []
+    },
+    "Ollama": {
+      "name": "Ollama",
+      "emoji": "🦙",
+      "desc": "로컬 모델 런타임",
+      "hasKey": true,
+      "keyName": "local",
+      "registeredModels": [
+        {
+          "id": "ollama-llama3",
+          "model": "llama3",
+          "status": "⚠️ 미검증 (로컬 실행 필요)"
+        },
+        {
+          "id": "ollama-mistral",
+          "model": "mistral",
+          "status": "⚠️ 미검증 (로컬 실행 필요)"
+        }
+      ],
+      "freeCount": 0,
+      "primaryProjects": [],
+      "fallbackProjects": []
+    }
+  },
+  "configs": [
+    {
+      "projectId": "career-final",
+      "dashboardProjectId": "career-aptitude",
+      "displayName": "직업진로 탐색",
+      "endpoint": "https://us-central1-career-aptitude-final.cloudfunctions.net/orchestratorUpdate",
+      "ok": true,
+      "config": {
+        "cerebras_model": "llama-3.3-70b",
+        "or_model": "openai/gpt-oss-120b:free",
+        "updated_at": "2026-04-28T00:46:24.709Z",
+        "updated_by": "init_firestore.js",
+        "or_model_2": "qwen/qwen3-coder:free"
+      }
+    },
+    {
+      "projectId": "healthy-final",
+      "dashboardProjectId": "healthy",
+      "displayName": "건강 AI 어드바이저",
+      "endpoint": "https://us-central1-healthy-final.cloudfunctions.net/orchestratorUpdate",
+      "ok": true,
+      "config": {
+        "cerebras_model": "llama-3.3-70b",
+        "or_model": "openai/gpt-oss-120b:free",
+        "updated_at": "2026-04-28T00:46:27.173Z",
+        "updated_by": "init_firestore.js",
+        "or_model_2": "qwen/qwen3-coder:free"
+      }
+    },
+    {
+      "projectId": "mbti-final",
+      "dashboardProjectId": "mbti",
+      "displayName": "MBTI AI 성격 분석",
+      "endpoint": "https://us-central1-mbti-final.cloudfunctions.net/orchestratorUpdate",
+      "ok": true,
+      "config": {
+        "cerebras_model": "llama-3.3-70b",
+        "or_model": "openai/gpt-oss-120b:free",
+        "updated_at": "2026-04-28T00:46:29.236Z",
+        "updated_by": "init_firestore.js",
+        "or_model_2": "qwen/qwen3-coder:free"
+      }
+    },
+    {
+      "projectId": "tarot-final",
+      "dashboardProjectId": "tarot",
+      "displayName": "타로 카드 AI 리딩",
+      "endpoint": "https://us-central1-tarot-final-1b241.cloudfunctions.net/orchestratorUpdate",
+      "ok": true,
+      "config": {
+        "cerebras_model": "llama-3.3-70b",
+        "or_model": "openai/gpt-oss-120b:free",
+        "updated_at": "2026-04-28T00:46:31.215Z",
+        "updated_by": "init_firestore.js",
+        "or_model_2": "qwen/qwen3-coder:free"
+      }
+    },
+    {
+      "projectId": "values-test-final",
+      "dashboardProjectId": "values",
+      "displayName": "가치관 테스트",
+      "endpoint": "https://us-central1-values-test-final.cloudfunctions.net/orchestratorUpdate",
+      "ok": true,
+      "config": {
+        "cerebras_model": "llama-3.3-70b",
+        "or_model": "openai/gpt-oss-120b:free",
+        "updated_at": "2026-04-28T00:46:33.086Z",
+        "updated_by": "init_firestore.js",
+        "or_model_2": "qwen/qwen3-coder:free"
+      }
+    },
+    {
+      "projectId": "core-competencies-final",
+      "dashboardProjectId": "core-competencies",
+      "displayName": "핵심역량 진단",
+      "endpoint": "https://us-central1-core-competencies-finai.cloudfunctions.net/orchestratorUpdate",
+      "ok": false,
+      "config": null,
+      "error": "fetch failed"
+    },
+    {
+      "projectId": "multiple-intelligence-final",
+      "dashboardProjectId": "multiple-intelligence",
+      "displayName": "다중지능 검사",
+      "endpoint": "https://us-central1-multiple-intelligence-final.cloudfunctions.net/orchestratorUpdate",
+      "ok": true,
+      "config": null
+    }
+  ],
+  "changelog": {
+    "changes": []
+  }
+}

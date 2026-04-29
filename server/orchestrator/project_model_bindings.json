@@ -1,0 +1,331 @@
+{
+  "schema_version": "0.3.0",
+  "updated_at": "2026-04-27",
+  "project_root": "E:\\Projects",
+  "sources": {
+    "ai_model_status": "E:\\Projects\\AI_MODEL_STATUS.json",
+    "dashboard_model_registry": "E:\\Projects\\Multi-trend dashboard\\web\\src\\data\\modelRegistry.ts"
+  },
+  "bindings": [
+    {
+      "project_id": "CommonAI",
+      "target_type": "node",
+      "target_location": "E:\\Projects\\CommonAI\\aiService.mjs",
+      "firebase_project_id": null,
+      "primary_model_id": "groq-llama33-70b",
+      "fallback_model_ids": [
+        "groq-llama31-8b",
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "file_edit",
+      "enabled": true,
+      "notes": "공통 라이브러리. 파일 직접 수정. 변경 시 하위 프로젝트 파급 주의",
+      "target_exists": true,
+      "ai_usage_verified": null,
+      "firestore_patched": false,
+      "verification_note": "기본 경로 검증 완료. AI 호출 정밀 검증은 단계별 진행"
+    },
+    {
+      "project_id": "career-final",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\career-final\\functions\\index.js",
+      "firebase_project_id": "career-aptitude-final",
+      "primary_model_id": "cerebras-llama33-70b",
+      "fallback_model_ids": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "firestore",
+      "enabled": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열",
+      "target_exists": true,
+      "ai_usage_verified": true,
+      "firestore_patched": true,
+      "patched_at": "2026-04-22",
+      "verification_note": "getModelConfig() 추가, 3개 모델 문자열 Firestore 동적 조회로 교체 완료"
+    },
+    {
+      "project_id": "healthy-final",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\healthy-final\\functions\\index.js",
+      "firebase_project_id": "healthy-final",
+      "primary_model_id": "cerebras-llama33-70b",
+      "fallback_model_ids": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "firestore",
+      "enabled": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열",
+      "target_exists": true,
+      "ai_usage_verified": true,
+      "firestore_patched": true,
+      "patched_at": "2026-04-22",
+      "verification_note": "getModelConfig() 추가, 3개 모델 문자열 Firestore 동적 조회로 교체 완료"
+    },
+    {
+      "project_id": "mbti-final",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\mbti-final\\functions\\index.js",
+      "firebase_project_id": "mbti-final",
+      "primary_model_id": "cerebras-llama33-70b",
+      "fallback_model_ids": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "firestore",
+      "enabled": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열",
+      "target_exists": true,
+      "ai_usage_verified": true,
+      "firestore_patched": true,
+      "patched_at": "2026-04-22",
+      "verification_note": "getModelConfig() 추가, 3개 모델 문자열 Firestore 동적 조회로 교체 완료"
+    },
+    {
+      "project_id": "tarot-final",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\tarot-final\\functions\\index.js",
+      "firebase_project_id": "tarot-final-1b241",
+      "primary_model_id": "cerebras-llama33-70b",
+      "fallback_model_ids": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "firestore",
+      "enabled": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열",
+      "target_exists": true,
+      "ai_usage_verified": true,
+      "firestore_patched": true,
+      "patched_at": "2026-04-22",
+      "verification_note": "getModelConfig() 추가, 3개 모델 문자열 Firestore 동적 조회로 교체 완료"
+    },
+    {
+      "project_id": "values-test-final",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\values-test-final\\functions\\index.js",
+      "firebase_project_id": "values-test-final",
+      "primary_model_id": "cerebras-llama33-70b",
+      "fallback_model_ids": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "firestore",
+      "enabled": true,
+      "notes": "Cerebras -> OpenRouter -> HuggingFace 계열",
+      "target_exists": true,
+      "ai_usage_verified": true,
+      "firestore_patched": true,
+      "patched_at": "2026-04-22",
+      "verification_note": "getModelConfig() 추가, 3개 모델 문자열 Firestore 동적 조회로 교체 완료"
+    },
+    {
+      "project_id": "core-competencies-final",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\core-competencies-final\\functions\\index.js",
+      "firebase_project_id": "core-competencies-finai",
+      "primary_model_id": "cerebras-llama33-70b",
+      "fallback_model_ids": [
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "firestore",
+      "enabled": true,
+      "notes": "Cerebras -> OpenRouter Gemini -> OpenRouter Step-flash 계열",
+      "target_exists": true,
+      "ai_usage_verified": true,
+      "firestore_patched": true,
+      "patched_at": "2026-04-22",
+      "verification_note": "getModelConfig() 추가, 3개 모델 문자열 Firestore 동적 조회로 교체 완료"
+    },
+    {
+      "project_id": "multiple-intelligence-final",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\multiple-intelligence-final\\multiple-intelligence-final\\functions\\index.js",
+      "firebase_project_id": "multiple-intelligence-final",
+      "primary_model_id": "groq-llama33-70b",
+      "fallback_model_ids": [
+        "groq-llama31-8b",
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "file_edit",
+      "enabled": true,
+      "notes": "Groq 3키 로테이션 + OpenRouter 폴백. 파일 직접 수정 모드",
+      "target_exists": true,
+      "ai_usage_verified": null,
+      "firestore_patched": false,
+      "verification_note": "2026-04-27 auto 전환. file_edit 모드로 대체"
+    },
+    {
+      "project_id": "saju-kang",
+      "firebase_project_id": "saju-kang",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\v15_fixed\\functions\\index.js",
+      "primary_model_id": "groq-llama33-70b",
+      "fallback_model_ids": [
+        "groq-llama31-8b",
+        "or-gpt-oss-free",
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "file_edit",
+      "enabled": true,
+      "notes": "Groq 4키 + Cerebras 로테이션. defineSecret 구조. 파일 직접 수정 모드",
+      "target_exists": true,
+      "ai_usage_verified": true,
+      "firestore_patched": false,
+      "verification_note": "2026-04-27 auto 전환. defineSecret 때문에 file_edit 모드 적용"
+    },
+    {
+      "project_id": "kquant",
+      "target_type": "google-apps-script",
+      "target_location": "Google Apps Script / Google Sheets (kquant 주식 분석)",
+      "firebase_project_id": null,
+      "primary_model_id": "or-gpt-oss-free",
+      "fallback_model_ids": [
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "manual_log",
+      "enabled": true,
+      "notes": "GAS 환경. 코드 직접 접근 불가. auto_replace는 변경 제안 로그만 출력",
+      "target_exists": true,
+      "ai_usage_verified": null,
+      "firestore_patched": false,
+      "verification_note": "2026-04-27 auto 전환. GAS 특성상 manual_log 모드"
+    },
+    {
+      "project_id": "Lotto-generation",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\Lotto-generation\\lotto-firebase-lab\\functions\\index.js",
+      "firebase_project_id": "lotto-generation",
+      "primary_model_id": "or-gpt-oss-free",
+      "fallback_model_ids": [
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "file_edit",
+      "enabled": true,
+      "notes": "primary or-qwen3-plus → or-step-flash로 교체(2026-04-27). 파일 직접 수정 모드",
+      "target_exists": true,
+      "ai_usage_verified": true,
+      "firestore_patched": false,
+      "verification_note": "lotto-firebase-lab/functions/index.js에서 OpenRouter 호출 로직 확인(2026-04-22). 2026-04-27 auto 전환"
+    },
+    {
+      "project_id": "Pension-lottery",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\Pension-lottery\\pension-firebase\\functions\\index.js",
+      "firebase_project_id": "pension-lottery",
+      "primary_model_id": "or-gpt-oss-free",
+      "fallback_model_ids": [
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "file_edit",
+      "runtime_policy": {
+        "dynamic_discovery": true,
+        "fallback_limit": 6
+      },
+      "enabled": true,
+      "notes": "primary or-qwen3-plus → or-step-flash로 교체(2026-04-27). 동적 랭킹 폴백 구조 유지",
+      "target_exists": true,
+      "ai_usage_verified": null,
+      "firestore_patched": false,
+      "verification_note": "2026-04-27 auto 전환. file_edit 모드"
+    },
+    {
+      "project_id": "multi-trend-dashboard-n8n",
+      "target_type": "n8n",
+      "target_location": "http://localhost:5678/api/v1/workflows",
+      "firebase_project_id": null,
+      "primary_model_id": "or-gpt-oss-free",
+      "fallback_model_ids": [
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "n8n_api",
+      "workflow_ids": {
+        "tracker": "bpRVaKYtdWiwBZoU",
+        "ondemand": "lL22uvWWE3SI0nM4",
+        "healthcheck": "nju4OqM0yMIbLRpM"
+      },
+      "enabled": true,
+      "notes": "n8n API 자동 패치. N8N_API_KEY 환경변수 필요",
+      "target_exists": null,
+      "ai_usage_verified": true,
+      "firestore_patched": false,
+      "verification_note": "2026-04-27 auto 전환. n8n_api 모드"
+    },
+    {
+      "project_id": "cloudflare-multi-trend-dashboard",
+      "target_type": "cloudflare-pages",
+      "target_location": "멀티트렌드.대시보드.페이지.dev",
+      "firebase_project_id": null,
+      "primary_model_id": "or-gpt-oss-free",
+      "fallback_model_ids": [
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "manual_log",
+      "enabled": true,
+      "notes": "Cloudflare Pages. 환경변수는 대시보드에서 설정. auto_replace는 변경 제안 로그만 출력",
+      "target_exists": true,
+      "ai_usage_verified": null,
+      "firestore_patched": false,
+      "verification_note": "2026-04-27 auto 전환. Cloudflare Pages 특성상 manual_log 모드"
+    },
+    {
+      "project_id": "cloudflare-korea-law",
+      "target_type": "cloudflare-pages",
+      "target_location": "korean-law-2g0.pages.dev",
+      "firebase_project_id": null,
+      "primary_model_id": "or-gpt-oss-free",
+      "fallback_model_ids": [
+        "or-qwen3-coder-free"
+      ],
+      "apply_mode": "auto",
+      "patch_mode": "manual_log",
+      "enabled": true,
+      "notes": "Cloudflare Pages 앱 (한국법). auto_replace는 변경 제안 로그만 출력",
+      "target_exists": true,
+      "ai_usage_verified": null,
+      "firestore_patched": false,
+      "verification_note": "2026-04-27 auto 전환. Cloudflare Pages 특성상 manual_log 모드"
+    },
+    {
+      "project_id": "Lotto-generation-v2-legacy",
+      "target_type": "firebase",
+      "target_location": "E:\\Projects\\Lotto-generation\\lotto-firebase-v2\\functions\\index.js",
+      "firebase_project_id": null,
+      "primary_model_id": "none",
+      "fallback_model_ids": [],
+      "apply_mode": "manual-approve",
+      "patch_mode": "disabled",
+      "enabled": false,
+      "notes": "레거시 경로. AI 모델 교체 대상에서 제외",
+      "target_exists": true,
+      "ai_usage_verified": false,
+      "firestore_patched": false,
+      "verification_note": "index.js에서 OpenRouter/LLM 호출 패턴 미확인(2026-04-22)"
+    }
+  ],
+  "verification_summary": {
+    "checked_at": "2026-04-27",
+    "path_check": "completed",
+    "auto_conversion_note": "2026-04-27: 전체 프로젝트 auto 전환 완료. patch_mode 기준: firestore(6개) / file_edit(5개) / n8n_api(1개) / manual_log(3개, GAS+Cloudflare)",
+    "lotto_ai_usage": "lab=true, v2=false",
+    "note": "n8n target_location은 URL이라 파일 존재 검사 대상 아님"
+  }
+}
