@@ -9,23 +9,19 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const VAULT_PATH = "E:/vault/api_vault.json";
 const STATUS_PATH = path.join(__dirname, "model_status.json");
 
-const vault = JSON.parse(fs.readFileSync(VAULT_PATH, "utf8"));
-const profile = vault.profiles.find(p => p.USER_NAME === vault.current_profile) || vault.profiles[0];
-
 const KEYS = {
-  OPENROUTER:  profile.OPENROUTER_API_KEY,
-  GROQ:        profile.GROQ_API_KEY,
-  CEREBRAS:    profile.CEREBRAS_API_KEY,
-  HF:          profile.HF_TOKEN,
-  GEMINI:      profile.GEMINI_API_KEY,
-  CHUTES:      profile.CHUTES_API_KEY,
-  HYPERBOLIC:  profile.HYPERBOLIC_API_KEY,
-  COHERE:      profile.COHERE_API_KEY,
-  SAMBANOVA:   profile.SAMBANOVA_API_KEY,
-  DEEPSEEK:    profile.DEEPSEEK_API_KEY,
+  OPENROUTER:  process.env.OPENROUTER_API_KEY,
+  GROQ:        process.env.GROQ_API_KEY,
+  CEREBRAS:    process.env.CEREBRAS_API_KEY,
+  HF:          process.env.HF_TOKEN,
+  GEMINI:      process.env.GEMINI_API_KEY,
+  CHUTES:      process.env.CHUTES_API_KEY,
+  HYPERBOLIC:  process.env.HYPERBOLIC_API_KEY,
+  COHERE:      process.env.COHERE_API_KEY,
+  SAMBANOVA:   process.env.SAMBANOVA_API_KEY,
+  DEEPSEEK:    process.env.DEEPSEEK_API_KEY,
 };
 
 // CLI --provider 필터
@@ -339,17 +335,8 @@ function saveResults() {
   fs.writeFileSync(STATUS_PATH, JSON.stringify(status, null, 2), "utf8");
   console.log(`\n✅ model_status.json 갱신 완료`);
 
-  // 2. api_vault.json 의 openrouter_free_models 갱신
   if (results.openrouter && results.openrouter.length > 0) {
-    const vaultData = JSON.parse(fs.readFileSync(VAULT_PATH, "utf8"));
-    const newFreeModels = {};
-    for (const m of results.openrouter) {
-      newFreeModels[m.name] = m.id;
-    }
-    vaultData.openrouter_free_models = newFreeModels;
-    vaultData._model_status_checked = now;
-    fs.writeFileSync(VAULT_PATH, JSON.stringify(vaultData, null, 2), "utf8");
-    console.log(`✅ api_vault.json openrouter_free_models 갱신 완료 (${results.openrouter.length}개)`);
+    console.log(`✅ OpenRouter 무료 모델 ${results.openrouter.length}개 수집 완료`);
   }
 
   // 3. 요약 출력

@@ -8,7 +8,7 @@ import multer from 'multer';
 import { google } from 'googleapis';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = Number(process.env.UPLOAD_API_PORT ?? 8787);
+const PORT = Number(process.env.UPLOAD_API_PORT ?? 3000);
 const DASHBOARD_SHEET_ID =
   process.env.DASHBOARD_SHEET_ID ?? '19n-FIkuZHHAnEIoBo2MrCaQhFcifFDZFZRJqL0KYseU';
 const DRIVE_FOLDER_ID = process.env.DRIVE_FOLDER_ID ?? '1lZnZbqVg3OTGTPvyy2xEuS7KT-i1apqc';
@@ -32,7 +32,7 @@ const ORCHESTRATOR_PATHS = {
   initFirestoreScript: path.join(ORCHESTRATOR_DIR, 'init_firestore.js'),
   repairAutoswitchScript: path.join(ORCHESTRATOR_DIR, 'update_n8n_autoswitch.js'),
 };
-const ORCHESTRATOR_VAULT_PATH = 'E:\\vault\\api_vault.json';
+const ORCHESTRATOR_VAULT_PATH = process.env.ORCHESTRATOR_VAULT_PATH ?? 'E:\\vault\\api_vault.json';
 const ORCHESTRATOR_PROJECTS = [
   {
     bindingProjectId: 'CommonAI',
@@ -705,7 +705,7 @@ app.get('/api/search', async (req, res) => {
       headers: {
         'ngrok-skip-browser-warning': 'true',
       },
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(60000),
     });
 
     const body = await n8nRes.text();
