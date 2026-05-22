@@ -24,7 +24,9 @@ export default async function handler(req: Request): Promise<Response> {
     });
   }
 
-  const n8nBase = (process.env.N8N_WEBHOOK_BASE ?? '').replace(/\/$/, '');
+  // Vercel Edge는 raw IP 직접 접근 차단 → IP를 nip.io 도메인으로 자동 변환
+  let n8nBase = (process.env.N8N_WEBHOOK_BASE ?? '').replace(/\/$/, '');
+  n8nBase = n8nBase.replace(/(https?:\/\/)(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/, '$1$2.nip.io');
 
   if (!n8nBase) {
     return new Response(
